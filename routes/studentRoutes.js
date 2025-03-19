@@ -1,5 +1,5 @@
 import express from 'express'
-import studentModel from '../model/model.js';
+import {studentModel} from '../model/model.js';
 import studentController from '../controller/studentController.js';
 
 const route = express.Router();

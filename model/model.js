@@ -8,9 +8,18 @@ const studentSchema = mongoose.Schema({
     section: String,
 })
 
-const studentModel = mongoose.model("students", studentSchema);
+const teacherSchema = mongoose.Schema({
+    teacher_id: Number,
+    firstname: String,
+    lastname: String,
+    courses: [String],
+    sections: [String],
+})
 
-export default studentModel;
+export const studentModel = mongoose.model("students", studentSchema);
+export const teacherModel = mongoose.model("teachers", teacherSchema);
+
+
 
 
 

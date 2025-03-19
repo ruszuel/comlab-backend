@@ -1,4 +1,4 @@
-import studentModel from "../model/model.js";
+import {studentModel} from "../model/model.js";
 
 const addStudent = async (req, res) => {
     const {student_id, firstname, lastname, course, section} = req.body
