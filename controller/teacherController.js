@@ -12,6 +12,10 @@ const getFaculty = async(req, res) => {
 const addFaculty = async (req, res) => {
     const {teacher_id, firstname, lastname, courses, sections} = req.body
     try {
+        const isExisting = teacherModel.findOne({teacher_id})
+        if(isExisting){
+            return res.sendStatus(403)
+        }
         const newFaculty = new teacherModel({teacher_id, firstname, lastname, courses, sections})
         await newFaculty.save();
         res.sendStatus(200)
