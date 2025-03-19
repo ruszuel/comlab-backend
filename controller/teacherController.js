@@ -25,5 +25,19 @@ const addFaculty = async (req, res) => {
     }
 }
 
+const deleteFaculty = async (req, res) => {
+    const {teacher_id} = req.body
+    try{
+        const delTeacher = await studentModel.deleteOne({teacher_id});
+        if(delTeacher.deletedCount === 0){
+            return res.sendStatus(404);
+        }
 
-export default {addFaculty, getFaculty}
+        res.sendStatus(200);
+    }catch(err){
+        res.status(500).json({ error: error.message });
+    }
+}
+
+
+export default {addFaculty, getFaculty, deleteFaculty}
