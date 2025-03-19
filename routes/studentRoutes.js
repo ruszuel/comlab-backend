@@ -10,7 +10,7 @@ route.get('/getStudents', async (req, res) => {
 })
 
 route.post('/addStudent', studentController.addStudent)
-route.delete('/deleteStudent', studentController.deleteStudent);
+route.delete('/deleteStudent/:student_id', studentController.deleteStudent);
 
 
 export default route;

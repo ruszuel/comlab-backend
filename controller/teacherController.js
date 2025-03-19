@@ -26,15 +26,15 @@ const addFaculty = async (req, res) => {
 }
 
 const deleteFaculty = async (req, res) => {
-    const {teacher_id} = req.body
+    const {teacher_id} = req.params
     try{
-        const delTeacher = await studentModel.deleteOne({teacher_id});
+        const delTeacher = await teacherModel.deleteOne({teacher_id});
         if(delTeacher.deletedCount === 0){
             return res.sendStatus(404);
         }
 
         res.sendStatus(200);
-    }catch(err){
+    }catch(error){
         res.status(500).json({ error: error.message });
     }
 }

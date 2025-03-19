@@ -6,6 +6,6 @@ const tRoute = express.Router()
 
 tRoute.get('/getTeachers', teacherController.getFaculty);
 tRoute.post('/addTeacher', teacherController.addFaculty);
-tRoute.delete('/deleteTeacher', teacherController.deleteFaculty)
+tRoute.delete('/deleteTeacher/:teacher_id', teacherController.deleteFaculty)
 
 export default tRoute;

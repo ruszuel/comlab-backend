@@ -19,7 +19,7 @@ const addStudent = async (req, res) => {
 }
 
 const deleteStudent = async (req, res) => {
-    const {student_id} = req.body
+    const {student_id} = req.params
     try{
         const delStud = await studentModel.deleteOne({student_id});
         if(delStud.deletedCount === 0){
