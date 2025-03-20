@@ -84,9 +84,9 @@ const sendQr = async (req, res) => {
 
 const addToAttendance = async (req, res) => {
     const {student_id, teacher_id, course, section, in_time, out_time} = req.body
-    let status = "Late";
+    let status;
     const philippineTime = moment().tz('Asia/Manila');
-    const time = philippineTime.format('hh:mm A');
+    const time = philippineTime.format('HH:mm');
     try {
         const now = new Date()
         const isExist = await studentModel.findOne({student_id})
@@ -100,7 +100,7 @@ const addToAttendance = async (req, res) => {
                 const formattedTime = moment(out, 'HH:mm');
                 const formattedOuTime = moment(out_time, 'HH:mm')
 
-                if(formattedOuTime.isBefore(formattedTime)){
+                if(formattedTime.isBefore(formattedOuTime)){
                     return res.status(402).send("Class are not done yet")
                 }
                 console.log(formattedTime.isBefore(formattedOuTime))
@@ -127,7 +127,7 @@ const addToAttendance = async (req, res) => {
             const formattedTimeIn = moment(time_in, 'HH:mm');
             const formattedInTime = moment(in_time, 'HH:mm');
             const gracePeriod = formattedInTime.clone().add(15, 'minutes');
-
+            status = "Late"
             if(formattedTimeIn.isBefore(gracePeriod)){
                 status = "Present"
             }
