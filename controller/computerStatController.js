@@ -1,8 +1,8 @@
-import { computer } from "../model/model.js";
+import { computerStats } from "../model/model.js";
 
 const getList = async(req, res) => {
   try {
-    const com = await computer.find();
+    const com = await computerStats.find();
     res.status(200).json({
         isSuccess: true,
         com
@@ -17,18 +17,19 @@ const getList = async(req, res) => {
   }
 }
 
-const addComputer = async (req, res) => {
-    const {name, room} = req.body
+const addComputerSet = async (req, res) => {
+    const {pc_id, comlabid, name, condition, status} = req.body
     try {
-        const isExisting = await computer.findOne({name})
-        if(isExisting){
-            return res.sendStatus(403)
-        }
-        const newComputer = new computer({name, room})
-        await newComputer.save();
+        // const isExisting = await computerStats.findOne({name})
+        // if(isExisting){
+        //     return res.sendStatus(403)
+        // }
+
+        const newComputerSet = new computerStats({pc_id, comlabid, name, condition, status, date_added: new Date().toISOString().split('T')[0]})
+        await newComputerSet.save();
         res.status(200).json({
             isSuccess: true,
-            newComputer
+            newComputerSet
         });
     } catch (error) {
         console.error(err);
@@ -39,4 +40,4 @@ const addComputer = async (req, res) => {
       });
     }
 }
-export default {getList, addComputer}
+export default {getList, addComputerSet}

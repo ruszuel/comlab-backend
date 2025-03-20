@@ -23,11 +23,12 @@ const computerSchema = mongoose.Schema({
 })
 
 const computerStatSchema = mongoose.Schema({
+    pc_id: String,
+    comlabid: String,
     name: String,
-    room: String,
-    computerSet: String,
     condition: String,
     status: String,
+    date_added: String,
 })
 
 const attendanceSchema = mongoose.Schema({
