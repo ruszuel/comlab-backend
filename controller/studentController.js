@@ -111,10 +111,12 @@ const addToAttendance = async (req, res) => {
 
         const rows = await studentModel.find({"student_id": student_id});
         if((rows[0].course === course) && (rows[0].section === section)){ //kapag equal yng section at course ng student sa course and section na sinet ni teacher
+            const course_section = rows[0].course + "-" +rows[0].section
             const date = now.toISOString().split('T')[0]
             const time_in = now.toLocaleTimeString()
             status = "Late"
-            const addToAttendance = new studentAttendance({student_id, subject, teacher_id, date, time_in, time_out: null, status})
+            console.log(course_section)
+            const addToAttendance = new studentAttendance({student_id, subject, teacher_id, course_section, date, time_in, time_out: null, status})
             const savedAttendance =  await addToAttendance.save();
             console.log(savedAttendance)
             return res.sendStatus(201);
@@ -126,4 +128,14 @@ const addToAttendance = async (req, res) => {
     }
 }
 
-export default {addStudent, deleteStudent, sendQr, addToAttendance}
+const getAttendance = async (req, res) => {
+    try{
+        const attendance = await studentAttendance.find();
+        res.status(200).json(attendance);
+    }catch(error){
+        console.log(error)
+        res.sendStatus(500);
+    }
+}
+
+export default {addStudent, deleteStudent, sendQr, addToAttendance, getAttendance}

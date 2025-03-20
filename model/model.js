@@ -35,6 +35,7 @@ const attendanceSchema = mongoose.Schema({
     student_id: String,
     subject: String,
     teacher_id: String,
+    course_section: String,
     date: String,
     time_in: String,
     time_out: String,
