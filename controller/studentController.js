@@ -50,6 +50,7 @@ const deleteStudent = async (req, res) => {
     }
 }
 
+
 const sendQr = async (req, res) => {
     const {student_id, student_email} = req.body
     try{
@@ -141,4 +142,17 @@ const getAttendance = async (req, res) => {
     }
 }
 
-export default {addStudent, deleteStudent, sendQr, addToAttendance, getAttendance}
+const deleteAllStudents = async (req, res) => {
+    try {
+        const delStud = await studentModel.deleteMany(); 
+        if (delStud.deletedCount === 0) {
+            return res.status(404).json({ message: "No students found" });
+        }
+
+        res.status(200).json({ message: "All students deleted successfully" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+export default {addStudent, deleteStudent, sendQr, addToAttendance, getAttendance, deleteAllStudents}
