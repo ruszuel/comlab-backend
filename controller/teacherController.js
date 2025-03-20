@@ -39,5 +39,21 @@ const deleteFaculty = async (req, res) => {
     }
 }
 
+const getSpecificId = async (req, res) => {
+    const { teacher_id } = req.params; 
+    try {
+        const teacher = await teacherModel.findOne({ teacher_id });  
+        if (!teacher) {
+            return res.sendStatus(404);
+        }
 
-export default {addFaculty, getFaculty, deleteFaculty}
+        res.status(200).json({isSuccess: true, teacher}); 
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: error.message }); 
+    }
+}
+
+
+
+export default {addFaculty, getFaculty, deleteFaculty, getSpecificId}
