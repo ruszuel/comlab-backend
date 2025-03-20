@@ -157,7 +157,7 @@ const getAttendance = async (req, res) => {
 
 const deleteAllStudents = async (req, res) => {
     try {
-        const delStud = await studentModel.deleteMany(); 
+        const delStud = await studentAttendance.deleteMany(); 
         if (delStud.deletedCount === 0) {
             return res.status(404).json({ message: "No students found" });
         }
