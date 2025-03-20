@@ -18,14 +18,14 @@ const getList = async(req, res) => {
 }
 
 const addComputerSet = async (req, res) => {
-    const {pc_id, comlabname, name, condition, status} = req.body
+    const {pc_id, comlabid, name, condition, status} = req.body
     try {
         // const isExisting = await computerStats.findOne({name})
         // if(isExisting){
         //     return res.sendStatus(403)
         // }
 
-        const newComputerSet = new computerStats({pc_id, comlabname, name, condition, status, date_added: new Date().toISOString().split('T')[0]})
+        const newComputerSet = new computerStats({pc_id, comlabid, name, condition, status, date_added: new Date().toISOString().split('T')[0]})
         await newComputerSet.save();
         res.status(200).json({
             isSuccess: true,
