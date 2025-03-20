@@ -162,7 +162,7 @@ const deleteAllStudentAttendance = async (req, res) => {
             return res.status(404).json({ message: "No students found" });
         }
 
-        res.status(200).json({ message: "All students deleted successfully" });
+        res.status(200).json({ message: "All attendance deleted successfully" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
