@@ -4,9 +4,11 @@ import nodemailer from 'nodemailer';
 import QRcode from 'qrcode'
 import dotenv from 'dotenv';
 
+
 dotenv.config()
 const email = process.env.EMAIL;
 const pass = process.env.PASSWORD;
+const moment = require('moment-timezone');
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -84,6 +86,9 @@ const sendQr = async (req, res) => {
 const addToAttendance = async (req, res) => {
     const {student_id, teacher_id, subject, course, section, time_out, time_in} = req.body
     let status;
+    const philippineTime = moment().tz('Asia/Manila');
+    const time = philippineTime.format('hh:mm A');
+    const date = philippineTime.format('YYYY-MM-DD');
     try {
         const now = new Date()
         const isExist = await studentModel.findOne({student_id})
@@ -93,7 +98,7 @@ const addToAttendance = async (req, res) => {
             const attRow = await studentAttendance.find({"student_id": student_id})
             console.log(attRow)
             if(attRow[0].time_in !== null && attRow[0].time_out === null){
-                const out = now.toLocaleTimeString();
+                const out = time
                 const upadatedTimeOut = await studentAttendance.updateOne({"student_id": student_id}, {$set: {time_out: out}})
 
                 if(upadatedTimeOut.modifiedCount === 0){
@@ -113,7 +118,7 @@ const addToAttendance = async (req, res) => {
         if((rows[0].course === course) && (rows[0].section === section)){ //kapag equal yng section at course ng student sa course and section na sinet ni teacher
             const course_section = rows[0].course + "-" +rows[0].section
             const date = now.toISOString().split('T')[0]
-            const time_in = now.toLocaleTimeString()
+            const time_in = time
             status = "Late"
             console.log(course_section)
             const addToAttendance = new studentAttendance({student_id, subject, teacher_id, course_section, date, time_in, time_out: null, status})
