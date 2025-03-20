@@ -6,6 +6,7 @@ import helmet from 'helmet'
 import studentRoutes from './routes/studentRoutes.js'
 import tRoute from './routes/teacherRoutes.js';
 import computerRoutes from "./routes/computerRoutes.js"
+import computerStatRoutes from "./routes/computerStatRoutes.js"
 
 const app = express();
 dotenv.config();
@@ -24,6 +25,7 @@ app.use(helmet())
 app.use('/api/student', studentRoutes)
 app.use('/api/teacher', tRoute)
 app.use('/api/computer', computerRoutes)
+app.use('/api/computerStat', computerStatRoutes)
 
 mongoose.connect(MONGOURL).then(() => {
     console.log("database is connected succesfully");
