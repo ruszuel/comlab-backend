@@ -155,7 +155,7 @@ const getAttendance = async (req, res) => {
     }
 }
 
-const deleteAllStudents = async (req, res) => {
+const deleteAllStudentAttendance = async (req, res) => {
     try {
         const delStud = await studentAttendance.deleteMany(); 
         if (delStud.deletedCount === 0) {
@@ -168,4 +168,4 @@ const deleteAllStudents = async (req, res) => {
     }
 }
 
-export default {addStudent, deleteStudent, sendQr, addToAttendance, getAttendance, deleteAllStudents}
+export default {addStudent, deleteStudent, sendQr, addToAttendance, getAttendance, deleteAllStudentAttendance}
