@@ -33,7 +33,6 @@ const computerStatSchema = mongoose.Schema({
 
 const attendanceSchema = mongoose.Schema({
     student_id: String,
-    subject: String,
     teacher_id: String,
     course_section: String,
     date: String,
