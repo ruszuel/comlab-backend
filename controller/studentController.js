@@ -82,7 +82,7 @@ const sendQr = async (req, res) => {
 }
 
 const addToAttendance = async (req, res) => {
-    const {student_id, teacher_id, subject, course, section, teacher_in} = req.body
+    const {student_id, teacher_id, subject, course, section} = req.body
     let status;
     try {
         const now = new Date()
