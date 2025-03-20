@@ -52,7 +52,7 @@ const deleteStudent = async (req, res) => {
 const sendQr = async (req, res) => {
     const {student_id, student_email} = req.body
     try{
-        const path = `./QR/${student_id}.png`
+        const path = `/tmp/${student_id}.png`
         await QRcode.toFile(path, student_id, {scale: 10});
 
         const mailOptions = {
