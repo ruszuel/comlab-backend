@@ -82,11 +82,29 @@ const sendQr = async (req, res) => {
 }
 
 const addToAttendance = async (req, res) => {
-    const {student_id, teacher_id, subject, course, section} = req.body
+    const {student_id, teacher_id, subject, course, section, time_out, time_in} = req.body
     let status;
     try {
         const now = new Date()
         const isExist = await studentModel.findOne({student_id})
+        const existInAttendance = await studentAttendance.findOne({student_id});
+
+        if(existInAttendance){
+            const attRow = await studentAttendance.find({"student_id": student_id})
+            console.log(attRow)
+            if(attRow[0].time_in !== null && attRow[0].time_out === null){
+                const out = now.toLocaleTimeString();
+                const upadatedTimeOut = await studentAttendance.updateOne({"student_id": student_id}, {$set: {time_out: out}})
+
+                if(upadatedTimeOut.modifiedCount === 0){
+                    return res.sendStatus(404)
+                }
+                return res.sendStatus(200)
+            }else{
+                return res.sendStatus(501)
+            }
+        }
+
         if(!isExist){
             return res.sendStatus(403); // pag wala sya sa student list
         }
@@ -99,7 +117,7 @@ const addToAttendance = async (req, res) => {
             const addToAttendance = new studentAttendance({student_id, subject, teacher_id, date, time_in, time_out: null, status})
             const savedAttendance =  await addToAttendance.save();
             console.log(savedAttendance)
-            return res.sendStatus(200);
+            return res.sendStatus(201);
         }else{
             return res.sendStatus(403);
         }
