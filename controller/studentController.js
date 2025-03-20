@@ -82,7 +82,7 @@ const sendQr = async (req, res) => {
 }
 
 const addToAttendance = async (req, res) => {
-    const {student_id, teacher_id, subject, course, section, time_out, time_in} = req.body
+    const {student_id, teacher_id, course, section, time_out, time_in} = req.body
     let status;
     try {
         const now = new Date()
@@ -116,7 +116,7 @@ const addToAttendance = async (req, res) => {
             const time_in = now.toLocaleTimeString()
             status = "Late"
             console.log(course_section)
-            const addToAttendance = new studentAttendance({student_id, subject, teacher_id, course_section, date, time_in, time_out: null, status})
+            const addToAttendance = new studentAttendance({student_id, teacher_id, course_section, date, time_in, time_out: null, status})
             const savedAttendance =  await addToAttendance.save();
             console.log(savedAttendance)
             return res.sendStatus(201);
