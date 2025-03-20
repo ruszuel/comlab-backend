@@ -83,8 +83,8 @@ const sendQr = async (req, res) => {
 }
 
 const addToAttendance = async (req, res) => {
-    const {student_id, teacher_id, subject, course, section, time_out, time_in} = req.body
-    let status;
+    const {student_id, teacher_id, course, section, in_time, out_time} = req.body
+    let status = "Late";
     const philippineTime = moment().tz('Asia/Manila');
     const time = philippineTime.format('hh:mm A');
     try {
@@ -97,6 +97,13 @@ const addToAttendance = async (req, res) => {
             console.log(attRow)
             if(attRow[0].time_in !== null && attRow[0].time_out === null){
                 const out = time;
+                const formattedTime = moment(out, 'HH:mm');
+                const formattedOuTime = moment(out_time, 'HH:mm')
+
+                if(formattedOuTime.isBefore(formattedTime)){
+                    return res.status(402).send("Class are not done yet")
+                }
+                console.log(formattedTime.isBefore(formattedOuTime))
                 const upadatedTimeOut = await studentAttendance.updateOne({"student_id": student_id}, {$set: {time_out: out}})
 
                 if(upadatedTimeOut.modifiedCount === 0){
@@ -109,17 +116,23 @@ const addToAttendance = async (req, res) => {
         }
 
         if(!isExist){
-            return res.sendStatus(403); // pag wala sya sa student list
+            return res.sendStatus(403);
         }
 
         const rows = await studentModel.find({"student_id": student_id});
-        if((rows[0].course === course) && (rows[0].section === section)){ //kapag equal yng section at course ng student sa course and section na sinet ni teacher
+        if((rows[0].course === course) && (rows[0].section === section)){
             const course_section = rows[0].course + "-" +rows[0].section
             const date = now.toISOString().split('T')[0]
             const time_in = time
-            status = "Late"
+            const formattedTimeIn = moment(time_in, 'HH:mm');
+            const formattedInTime = moment(in_time, 'HH:mm');
+            const gracePeriod = formattedInTime.clone().add(15, 'minutes');
+
+            if(formattedTimeIn.isBefore(gracePeriod)){
+                status = "Present"
+            }
             console.log(course_section)
-            const addToAttendance = new studentAttendance({student_id, subject, teacher_id, course_section, date, time_in, time_out: null, status})
+            const addToAttendance = new studentAttendance({student_id, teacher_id, course_section, date, time_in, time_out: null, status})
             const savedAttendance =  await addToAttendance.save();
             console.log(savedAttendance)
             return res.sendStatus(201);
