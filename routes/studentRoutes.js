@@ -14,6 +14,6 @@ route.delete('/deleteStudent/:student_id', studentController.deleteStudent);
 route.post('/generateQR', studentController.sendQr)
 route.post('/addAttendance', studentController.addToAttendance)
 route.get('/getAttendance', studentController.getAttendance)
-route.get('/deleteAllStudents', studentController.deleteAllStudents)
+route.delete('/deleteAllStudents', studentController.deleteAllStudents)
 
 export default route;
