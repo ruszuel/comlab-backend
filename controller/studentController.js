@@ -247,9 +247,6 @@ const getAttendance = async (req, res) => {
 const deleteAllStudentAttendance = async (req, res) => {
     try {
         const delStud = await studentAttendance.deleteMany(); 
-        if (delStud.deletedCount === 0) {
-            return res.status(404).json({ message: "No students found" });
-        }
 
         res.status(200).json({ message: "All attendance deleted successfully" });
     } catch (err) {
