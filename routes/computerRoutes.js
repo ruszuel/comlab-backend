@@ -5,6 +5,6 @@ const route = express.Router();
 
 route.get('/getList', computerController.getList)
 route.post('/add', computerController.addComputer)
-route.delete('/deleteCom', computerController.deleteCom)
+route.delete('/deleteCom/:_id', computerController.deleteCom)
 
 export default route;
