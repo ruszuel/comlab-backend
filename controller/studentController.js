@@ -1,4 +1,4 @@
-import {studentModel, teacherModel} from "../model/model.js";
+import {studentModel, teacherModel, records} from "../model/model.js";
 import { studentAttendance } from "../model/model.js";
 import nodemailer from 'nodemailer';
 import QRcode from 'qrcode'
@@ -257,4 +257,19 @@ const deleteAllStudentAttendance = async (req, res) => {
     }
 }
 
-export default {addStudent, deleteStudent, sendQr, addToAttendance, getAttendance, deleteAllStudentAttendance, addToClass, updateAttendance}
+const addToAllAttendance = async (req, res) => {
+    try {
+        const current = await studentAttendance.find()
+        console.log("Fetched Attendance Records:", current);
+        if (current.length > 0) {
+            await records.insertMany(current);
+            res.sendStatus(200)
+        } else {
+            res.sendStatus(404)
+        }
+    } catch (error) {
+        res.sendStatus(500)
+    }
+}
+
+export default {addStudent, deleteStudent, sendQr, addToAttendance, getAttendance, deleteAllStudentAttendance, addToClass, updateAttendance, addToAllAttendance}

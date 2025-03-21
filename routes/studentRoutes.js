@@ -17,5 +17,6 @@ route.get('/getAttendance', studentController.getAttendance)
 route.delete('/deleteAllStudentAttendance', studentController.deleteAllStudentAttendance)
 route.post('/addToClass', studentController.addToClass);
 route.post('/updateAttendance', studentController.updateAttendance)
+route.post('/transferToRecords', studentController.addToAllAttendance)
 
 export default route;

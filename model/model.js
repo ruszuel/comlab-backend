@@ -41,11 +41,22 @@ const attendanceSchema = mongoose.Schema({
     status: String,
 })
 
+const recordSchema = mongoose.Schema({
+    student_id: String,
+    teacher_id: String,
+    course_section: String,
+    date: String,
+    time_in: String,
+    time_out: String,
+    status: String,
+})
+
 export const studentModel = mongoose.model("students", studentSchema);
 export const teacherModel = mongoose.model("teachers", teacherSchema);
 export const computer = mongoose.model("computers", computerSchema);
 export const computerStats = mongoose.model("computer_stats", computerStatSchema);
 export const studentAttendance = mongoose.model("attendances", attendanceSchema);
+export const records = mongoose.model("attendance_records", recordSchema);
 
 
 
