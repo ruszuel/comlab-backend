@@ -39,4 +39,19 @@ const addComputer = async (req, res) => {
       });
     }
 }
-export default {getList, addComputer}
+
+const deleteCom = async (req, res) => {
+    const {_id} = req.params
+    try{
+        const delCom = await computer.deleteOne({_id});
+        if(delCom.deletedCount === 0){
+            return res.status(404).json({ message: "Data not found" });
+        }
+
+        res.status(200).json({ message: "Data set deleted successfully" });
+    }catch(err){
+        res.status(500).json({ error: error.message });
+    }
+}
+
+export default {getList, addComputer, deleteCom}

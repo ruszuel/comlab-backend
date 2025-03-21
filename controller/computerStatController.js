@@ -40,4 +40,19 @@ const addComputerSet = async (req, res) => {
       });
     }
 }
-export default {getList, addComputerSet}
+
+const deleteComputerSet = async (req, res) => {
+    const {_id} = req.params
+    try{
+        const delSet = await computerStats.deleteOne({_id});
+        if(delSet.deletedCount === 0){
+            return res.status(404).json({ message: "Computer Set not found" });
+        }
+
+        res.status(200).json({ message: "Computer set deleted successfully" });
+    }catch(err){
+        res.status(500).json({ error: error.message });
+    }
+}
+
+export default {getList, addComputerSet, deleteComputerSet}
