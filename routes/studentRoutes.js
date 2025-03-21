@@ -15,5 +15,7 @@ route.post('/generateQR', studentController.sendQr)
 route.post('/addAttendance', studentController.addToAttendance)
 route.get('/getAttendance', studentController.getAttendance)
 route.delete('/deleteAllStudentAttendance', studentController.deleteAllStudentAttendance)
+route.post('/addToClass', studentController.addToClass);
+route.post('/updateAttendance', studentController.updateAttendance)
 
 export default route;

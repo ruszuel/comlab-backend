@@ -1,4 +1,4 @@
-import {studentModel} from "../model/model.js";
+import {studentModel, teacherModel} from "../model/model.js";
 import { studentAttendance } from "../model/model.js";
 import nodemailer from 'nodemailer';
 import QRcode from 'qrcode'
@@ -80,6 +80,95 @@ const sendQr = async (req, res) => {
         })
     }catch(err){
         res.status(500).send(err);
+    }
+}
+
+const addToClass = async(req, res) => {
+    const {teacher_id, course, section} = req.body
+    const now = new Date();
+    const date = now.toISOString().split('T')[0]
+    try {
+        const isExist = await teacherModel.findOne({teacher_id});
+        if(!isExist){
+            return res.sendStatus(403) //forbid not existing teacher
+        }
+
+        const students = await studentModel.find({ course, section});
+        if(students.length === 0){
+            return res.sendStatus(404);
+        }
+
+        const attendanceEntries = students.map(student => ({
+            student_id: student.student_id,
+            teacher_id,
+            course_section: `${student.course}-${student.section}`,
+            date,
+            time_in: null,
+            time_out: null,
+            status: "Absent",
+        }));
+
+        await studentAttendance.insertMany(attendanceEntries);
+        return res.status(200).json({ message: "Attendance added successfully" });
+
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(500);
+    }
+}
+
+const updateAttendance = async (req, res) => {
+    const {student_id, in_time, out_time} = req.body
+    let status = "Late";
+    const philippineTime = moment().tz('Asia/Manila');
+    const time = philippineTime.format('HH:mm');
+    try {
+        const inClass = await studentAttendance.find({student_id});
+        if(inClass.length === 0){
+            return res.status(404).json("Student not found!");
+        }
+
+        if(inClass[0].time_in !== null && inClass[0].time_out === null){
+            const out = time;
+            const formattedTime = moment(out, 'HH:mm');
+            const formattedOuTime = moment(out_time, 'HH:mm')
+
+            if(formattedTime.isBefore(formattedOuTime)){
+                return res.status(402).send("Class are not done yet")
+            }
+            console.log(formattedTime.isBefore(formattedOuTime))
+            const upadatedTimeOut = await studentAttendance.updateOne({"student_id": student_id}, {$set: {time_out: out}})
+
+            if(upadatedTimeOut.modifiedCount === 0){
+                return res.sendStatus(404)
+            }
+            return res.sendStatus(200)
+        }
+
+        if(inClass[0].time_in === null){
+            const formattedTimeIn = moment(time, 'HH:mm')
+            const formattedInTime = moment(in_time, 'HH:mm');
+            const gracePeriod = formattedInTime.clone().add(15, 'minutes');
+            const considerAbsent = formattedInTime.clone().add(40, 'minutes');
+            if(formattedTimeIn.isBefore(gracePeriod)){
+                status = "Present"
+            }
+
+            if(inClass[0].time_in === null && formattedTimeIn.isAfter(considerAbsent)){
+                return res.status(403).send("You cannot enter this class now");
+            }
+
+            const updateTimeIn = await studentAttendance.updateOne({"student_id": student_id}, {$set: {time_in: time, status}})
+            if(updateTimeIn.modifiedCount === 0){
+                return res.status(405).json("Failed to Update in-time")
+            }else{
+                return res.sendStatus(200);
+            }
+        }
+        
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send(error);
     }
 }
 
@@ -168,4 +257,4 @@ const deleteAllStudentAttendance = async (req, res) => {
     }
 }
 
-export default {addStudent, deleteStudent, sendQr, addToAttendance, getAttendance, deleteAllStudentAttendance}
+export default {addStudent, deleteStudent, sendQr, addToAttendance, getAttendance, deleteAllStudentAttendance, addToClass, updateAttendance}
