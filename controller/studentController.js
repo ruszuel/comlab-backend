@@ -246,8 +246,7 @@ const getAttendance = async (req, res) => {
 
 const deleteAllStudentAttendance = async (req, res) => {
     try {
-        const delStud = await studentAttendance.deleteMany(); 
-
+        await studentAttendance.deleteMany(); 
         res.status(200).json({ message: "All attendance deleted successfully" });
     } catch (err) {
         res.status(500).json({ error: err.message });
