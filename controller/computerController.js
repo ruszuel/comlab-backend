@@ -1,4 +1,5 @@
 import { computer } from "../model/model.js";
+import mongoose from "mongoose";
 
 const getList = async(req, res) => {
   try {
@@ -8,12 +9,12 @@ const getList = async(req, res) => {
         com
     });
   } catch (err) {
-      console.error(err);
-      res.status(500).json({
-          isSuccess: false,
-          message: "An error occurred while fetching the data.",
-          error: err.message
-      });
+    console.error(err);
+    res.status(500).json({
+        isSuccess: false,
+        message: "An error occurred while fetching the data.",
+        error: err.message
+    });
   }
 }
 
@@ -33,10 +34,10 @@ const addComputer = async (req, res) => {
     } catch (error) {
         console.error(err);
         res.status(500).json({
-          isSuccess: false,
-          message: "An error occurred while fetching the data.",
-          error: err.message
-      });
+            isSuccess: false,
+            message: "An error occurred while fetching the data.",
+            error: err.message
+        });
     }
 }
 
@@ -54,4 +55,29 @@ const deleteCom = async (req, res) => {
     }
 }
 
-export default {getList, addComputer, deleteCom}
+const editCom = async (req, res) => {
+    const {comID, name, room} = req.body
+    try {
+
+        if (!mongoose.Types.ObjectId.isValid(comID)) {
+            return res.status(400).json({ error: "Invalid ID format" });
+        }
+        const objectId = new mongoose.Types.ObjectId(comID);
+        const canEdit = await computer.findOne({"_id": objectId})
+        if(!canEdit){
+            return res.sendStatus(404)
+        }
+        
+        const update = await computer.updateOne({"_id": objectId}, {$set: {name, room}})
+        if(update.modifiedCount === 0){
+            return res.sendStatus(402)
+        }
+
+        return res.sendStatus(200)
+    } catch (error) {
+        console.log(error)
+        return res.sendStatus(500)
+    }
+}
+
+export default {getList, addComputer, deleteCom, editCom}

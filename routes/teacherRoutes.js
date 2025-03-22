@@ -8,5 +8,9 @@ tRoute.get('/getTeachers', teacherController.getFaculty);
 tRoute.post('/addTeacher', teacherController.addFaculty);
 tRoute.delete('/deleteTeacher/:teacher_id', teacherController.deleteFaculty)
 tRoute.get('/getSpecificTeacher/:teacher_id', teacherController.getSpecificId);
+tRoute.post('/teacher-login', teacherController.facultyLogIn)
+tRoute.post('/teacherQR', teacherController.sendFacultyQr)
+tRoute.post('/addToAttendance', teacherController.addTeacherAttendance)
+tRoute.post('/updateAttendance', teacherController.updateTeacherAttendance)
 
 export default tRoute;

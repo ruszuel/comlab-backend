@@ -15,6 +15,8 @@ const teacherSchema = mongoose.Schema({
     lastname: String,
     courses: [String],
     sections: [String],
+    teacher_email: String,
+    password: String,
 })
 
 const computerSchema = mongoose.Schema({
@@ -41,6 +43,8 @@ const attendanceSchema = mongoose.Schema({
     time_in: String,
     time_out: String,
     status: String,
+    teacher_name: String,
+    subject: String,
 })
 
 const recordSchema = mongoose.Schema({
@@ -51,6 +55,17 @@ const recordSchema = mongoose.Schema({
     time_in: String,
     time_out: String,
     status: String,
+    teacher_name: String,
+    subject: String,
+})
+
+const teacherAttendanceSchema = mongoose.Schema({
+    teacher_id: String,
+    teacher_name: String,
+    time_in: String,
+    time_out: String,
+    course_section: String,
+    subject: String,
 })
 
 export const studentModel = mongoose.model("students", studentSchema);
@@ -59,7 +74,7 @@ export const computer = mongoose.model("computers", computerSchema);
 export const computerStats = mongoose.model("computer_stats", computerStatSchema);
 export const studentAttendance = mongoose.model("attendances", attendanceSchema);
 export const records = mongoose.model("attendance_records", recordSchema);
-
+export const teacherAttendance = mongoose.model("teacher_attendances", teacherAttendanceSchema)
 
 
 

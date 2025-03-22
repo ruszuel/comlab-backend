@@ -84,7 +84,7 @@ const sendQr = async (req, res) => {
 }
 
 const addToClass = async(req, res) => {
-    const {teacher_id, course, section} = req.body
+    const {teacher_id, course, section, subject} = req.body
     const now = new Date();
     const date = now.toISOString().split('T')[0]
     try {
@@ -92,7 +92,8 @@ const addToClass = async(req, res) => {
         if(!isExist){
             return res.sendStatus(403) //forbid not existing teacher
         }
-
+        console.log(isExist)
+        const teacherName = isExist.firstname + " " + isExist.lastname
         const students = await studentModel.find({ course, section});
         if(students.length === 0){
             return res.sendStatus(404);
@@ -106,6 +107,8 @@ const addToClass = async(req, res) => {
             time_in: null,
             time_out: null,
             status: "Absent",
+            teacher_name: teacherName,
+            subject
         }));
 
         await studentAttendance.insertMany(attendanceEntries);
