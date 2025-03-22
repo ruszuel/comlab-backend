@@ -1,5 +1,4 @@
 import { computerStats } from "../model/model.js";
-import moment from 'moment-timezone';
 
 const getList = async(req, res) => {
   try {
@@ -19,7 +18,6 @@ const getList = async(req, res) => {
 }
 
 const addComputerSet = async (req, res) => {
-    const philippineTimeFull = moment().tz('Asia/Manila').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
     const {pc_id, comlabid, name, condition, status} = req.body
     try {
         // const isExisting = await computerStats.findOne({name})
@@ -27,7 +25,7 @@ const addComputerSet = async (req, res) => {
         //     return res.sendStatus(403)
         // }
 
-        const newComputerSet = new computerStats({pc_id, comlabid, name, condition, status, date_added: philippineTimeFull, updated_at: philippineTimeFull})
+        const newComputerSet = new computerStats({pc_id, comlabid, name, condition, status, date_added: new Date().toISOString().split('T')[0]})
         await newComputerSet.save();
         res.status(200).json({
             isSuccess: true,
