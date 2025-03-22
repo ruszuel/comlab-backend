@@ -57,4 +57,30 @@ const deleteComputerSet = async (req, res) => {
     }
 }
 
-export default {getList, addComputerSet, deleteComputerSet}
+const editComputerSet = async (req, res) => {
+    const { _id } = req.params;
+    const { pc_id, comlabid, name, condition, status, comment } = req.body;
+    const philippineTimeFull = moment().tz('Asia/Manila').format('YYYY-MM-DD : hh:mm A');
+
+    try {
+        const updatedComputerSet = await computerStats.findByIdAndUpdate(_id,{ pc_id, comlabid, name, condition, status, comment, updated_at: philippineTimeFull },{ new: true });
+
+        if (!updatedComputerSet) {
+            return res.status(404).json({ message: "Computer Set not found" });
+        }
+
+        res.status(200).json({
+            isSuccess: true,
+            updatedComputerSet
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            isSuccess: false,
+            message: "An error occurred while updating the data.",
+            error: error.message
+        });
+    }
+}
+
+export default {getList, addComputerSet, deleteComputerSet, editComputerSet}
