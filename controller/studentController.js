@@ -269,6 +269,16 @@ const addToAllAttendance = async (req, res) => {
     }
 }
 
+const getTotalAttendance = async (req, res) => {
+    try{
+        const record = await records.find();
+        res.status(200).json(record);
+    }catch(error){
+        console.log(error)
+        res.sendStatus(500);
+    }
+}
+
 //pushing just to update vercel
 
-export default {addStudent, deleteStudent, sendQr, addToAttendance, getAttendance, deleteAllStudentAttendance, addToClass, updateAttendance, addToAllAttendance}
+export default {addStudent, deleteStudent, sendQr, addToAttendance, getAttendance, deleteAllStudentAttendance, addToClass, updateAttendance, addToAllAttendance, getTotalAttendance}
