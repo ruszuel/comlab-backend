@@ -27,7 +27,7 @@ const addComputerSet = async (req, res) => {
         //     return res.sendStatus(403)
         // }
 
-        const newComputerSet = new computerStats({pc_id, comlabid, name, condition, status, date_added: philippineTimeFull, updated_at: philippineTimeFull, comment: "No comment..."})
+        const newComputerSet = new computerStats({pc_id, comlabid, name, condition, status, date_added: philippineTimeFull, updated_at: philippineTimeFull, comment: ""})
         await newComputerSet.save();
         res.status(200).json({
             isSuccess: true,
