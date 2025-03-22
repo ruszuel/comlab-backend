@@ -85,7 +85,7 @@ const editCom = async (req, res) => {
     const { name, room} = req.body
 
     try {
-        const updatedCom = await computerStats.findByIdAndUpdate(_id,{ name, room });
+        const updatedCom = await computer.findByIdAndUpdate(_id,{ name, room });
 
         if (!updatedCom) {
             return res.status(404).json({ message: "Not found" });
