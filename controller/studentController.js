@@ -128,7 +128,7 @@ const updateAttendance = async (req, res) => {
             return res.status(404).json("Student not found!");
         }
 
-        if(inClass[0].time_in !== null && inClass[0].time_out === null){
+        if(inClass[0].time_in !== null && inClass[0].time_out === null){ // check if time_in is not null and timeout null
             const out = time;
             const formattedTime = moment(out, 'HH:mm');
             const formattedOuTime = moment(out_time, 'HH:mm')
@@ -145,7 +145,7 @@ const updateAttendance = async (req, res) => {
             return res.sendStatus(200)
         }
 
-        if(inClass[0].time_in === null){
+        if(inClass[0].time_in === null){ // check if time in is null
             const formattedTimeIn = moment(time, 'HH:mm')
             const formattedInTime = moment(in_time, 'HH:mm');
             const gracePeriod = formattedInTime.clone().add(15, 'minutes');
@@ -154,7 +154,7 @@ const updateAttendance = async (req, res) => {
                 status = "Present"
             }
 
-            if(inClass[0].time_in === null && formattedTimeIn.isAfter(considerAbsent)){
+            if(inClass[0].time_in === null && formattedTimeIn.isAfter(considerAbsent)){ //chck if time in is null and if time in is after 40 mins
                 return res.status(403).send("You cannot enter this class now");
             }
 
@@ -165,6 +165,7 @@ const updateAttendance = async (req, res) => {
                 return res.sendStatus(200);
             }
         }
+        return res.sendStatus(405);
         
     } catch (error) {
         console.log(error)
