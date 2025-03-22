@@ -29,6 +29,8 @@ const computerStatSchema = mongoose.Schema({
     condition: String,
     status: String,
     date_added: String,
+    updated_at: String,
+    comment: String,
 })
 
 const attendanceSchema = mongoose.Schema({
