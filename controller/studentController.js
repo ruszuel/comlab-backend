@@ -268,4 +268,6 @@ const addToAllAttendance = async (req, res) => {
     }
 }
 
+//pushing just to update vercel
+
 export default {addStudent, deleteStudent, sendQr, addToAttendance, getAttendance, deleteAllStudentAttendance, addToClass, updateAttendance, addToAllAttendance}
