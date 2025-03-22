@@ -19,7 +19,7 @@ const getList = async(req, res) => {
 }
 
 const addComputerSet = async (req, res) => {
-    const philippineTimeFull = moment().tz('Asia/Manila').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+    const philippineTimeFull = moment().tz('Asia/Manila').format('YYYY-MM-DD : hh:mm A');
     const {pc_id, comlabid, name, condition, status} = req.body
     try {
         // const isExisting = await computerStats.findOne({name})
