@@ -27,7 +27,7 @@ const getFaculty = async(req, res) => {
 }
 
 const addFaculty = async (req, res) => {
-    const {teacher_id, firstname, lastname, courses, sections, teacher_email} = req.body
+    const {teacher_id, firstname, lastname, courses, sections, teacher_email, subjects} = req.body
     try {
         const isExisting = await teacherModel.findOne({teacher_id})
         if(isExisting){
@@ -37,7 +37,7 @@ const addFaculty = async (req, res) => {
         const pass = lastname.toUpperCase() + "_" + firstname.toUpperCase();
         const hashedPassed = await bcrytp.hash(pass, 10);
 
-        const newFaculty = new teacherModel({teacher_id, firstname, lastname, courses, sections, teacher_email, password: hashedPassed})
+        const newFaculty = new teacherModel({teacher_id, firstname, lastname, courses, sections, teacher_email, password: hashedPassed, subjects})
         await newFaculty.save();
         res.sendStatus(200)
     } catch (error) {

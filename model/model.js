@@ -17,6 +17,7 @@ const teacherSchema = mongoose.Schema({
     sections: [String],
     teacher_email: String,
     password: String,
+    subjects: [String],
 })
 
 const computerSchema = mongoose.Schema({
