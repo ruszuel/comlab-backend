@@ -55,28 +55,53 @@ const deleteCom = async (req, res) => {
     }
 }
 
-const editCom = async (req, res) => {
-    const {comID, name, room} = req.body
-    try {
+// const editCom = async (req, res) => {
+//     const {comID, name, room} = req.body
+//     try {
 
-        if (!mongoose.Types.ObjectId.isValid(comID)) {
-            return res.status(400).json({ error: "Invalid ID format" });
-        }
-        const objectId = new mongoose.Types.ObjectId(comID);
-        const canEdit = await computer.findOne({"_id": objectId})
-        if(!canEdit){
-            return res.sendStatus(404)
-        }
+//         if (!mongoose.Types.ObjectId.isValid(comID)) {
+//             return res.status(400).json({ error: "Invalid ID format" });
+//         }
+//         const objectId = new mongoose.Types.ObjectId(comID);
+//         const canEdit = await computer.findOne({"_id": objectId})
+//         if(!canEdit){
+//             return res.sendStatus(404)
+//         }
         
-        const update = await computer.updateOne({"_id": objectId}, {$set: {name, room}})
-        if(update.modifiedCount === 0){
-            return res.sendStatus(402)
+//         const update = await computer.updateOne({"_id": objectId}, {$set: {name, room}})
+//         if(update.modifiedCount === 0){
+//             return res.sendStatus(402)
+//         }
+
+//         return res.sendStatus(200)
+//     } catch (error) {
+//         console.log(error)
+//         return res.sendStatus(500)
+//     }
+// }
+
+const editCom = async (req, res) => {
+    const { _id } = req.params;
+    const {comID, name, room} = req.body
+
+    try {
+        const updatedCom = await computerStats.findByIdAndUpdate(_id,{ comID, name, room });
+
+        if (!updatedCom) {
+            return res.status(404).json({ message: "Not found" });
         }
 
-        return res.sendStatus(200)
+        res.status(200).json({
+            isSuccess: true,
+            updatedCom
+        });
     } catch (error) {
-        console.log(error)
-        return res.sendStatus(500)
+        console.error(error);
+        res.status(500).json({
+            isSuccess: false,
+            message: "An error occurred while updating the data.",
+            error: error.message
+        });
     }
 }
 
