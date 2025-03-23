@@ -294,15 +294,7 @@ const editStudent = async (req, res) => {
             return res.sendStatus(404);
         }
 
-        const update = {
-            firstname,
-            lastname,
-            email,
-            course,
-            section,
-        }
-
-        const updating = await studentModel.updateOne(update)
+        const updating = await studentModel.updateOne({student_id, firstname, lastname, email, course, section})
         if(updating.modifiedCount !== 0){
             return res.sendStatus(200)
         }
