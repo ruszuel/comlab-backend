@@ -260,9 +260,12 @@ const deleteAllStudentAttendance = async (req, res) => {
 const addToAllAttendance = async (req, res) => {
     try {
         const current = await studentAttendance.find()
-        console.log("Fetched Attendance Records:", current);
+        const updated = await studentAttendance.updateMany({"time_out": null}, {$set :{status: "Absent"}})
+        const updatedCurrent = await studentAttendance.find()
+
+        console.log("Fetched Attendance Records:", updatedCurrent);
         if (current.length > 0) {
-            await records.insertMany(current);
+            await records.insertMany(updatedCurrent);
             res.sendStatus(200)
         } else {
             res.sendStatus(404)
