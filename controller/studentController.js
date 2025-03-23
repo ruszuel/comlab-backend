@@ -108,7 +108,8 @@ const addToClass = async(req, res) => {
             time_out: null,
             status: "Absent",
             teacher_name: teacherName,
-            subject
+            subject,
+            student_name: student.firstname + " " + student.lastname
         }));
 
         await studentAttendance.insertMany(attendanceEntries);

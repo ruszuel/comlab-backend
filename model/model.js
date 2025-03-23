@@ -46,6 +46,7 @@ const attendanceSchema = mongoose.Schema({
     status: String,
     teacher_name: String,
     subject: String,
+    student_name: String,
 })
 
 const recordSchema = mongoose.Schema({
