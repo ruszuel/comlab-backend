@@ -144,7 +144,7 @@ const addTeacherAttendance = async (req, res) => { // when start class is clicke
     }
 }
 
-const updateTeacherAttendance = async (req, res) => { //when start class is clicked
+const updateTeacherAttendance = async (req, res) => { //when end class is clicked
     const {teacher_id, time_out} = req.body
     try {
         const teacher = await teacherAttendance.find({teacher_id})
