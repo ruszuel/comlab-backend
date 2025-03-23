@@ -67,6 +67,8 @@ const teacherAttendanceSchema = mongoose.Schema({
     time_out: String,
     course_section: String,
     subject: String,
+    date: String,
+    unique: String,
 })
 
 export const studentModel = mongoose.model("students", studentSchema);

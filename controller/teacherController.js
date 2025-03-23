@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import bcrytp from 'bcrypt'
 import nodemailer from 'nodemailer'
 import QRcode from 'qrcode'
+import { randomUUID } from 'crypto';
 
 dotenv.config()
 const email = process.env.EMAIL;
@@ -128,7 +129,12 @@ const facultyLogIn = async (req, res) => {// gumagana
 }
 
 const addTeacherAttendance = async (req, res) => { // when start class is clicked, GUMAGANA
-    const {teacher_id, time_in, subject, course, section} = req.body
+    const {teacher_id, time_in, subject, course, section, unique} = req.body
+    const now = new Date()
+    const date = now.toISOString().split('T')[0]
+    // const unique = randomUUID().replace(/-/g, '').slice(0, 5);
+
+    console.log(unique.toLocaleUpperCase())
     try{
         const teacher = await teacherModel.find({teacher_id});
         if(teacher.length === 0){
@@ -136,7 +142,7 @@ const addTeacherAttendance = async (req, res) => { // when start class is clicke
         }
         const teacherName = teacher[0].firstname + " " + teacher[0].lastname;
         const course_section = course+"-"+section;
-        const newTeacher = new teacherAttendance({teacher_id, teacher_name: teacherName, time_in, time_out: null, course_section, subject});
+        const newTeacher = new teacherAttendance({teacher_id, teacher_name: teacherName, time_in, time_out: null, course_section, subject, date, unique});
         newTeacher.save();
         return res.sendStatus(200);
     }catch(error){
@@ -145,9 +151,9 @@ const addTeacherAttendance = async (req, res) => { // when start class is clicke
 }
 
 const updateTeacherAttendance = async (req, res) => { //when end class is clicked
-    const {teacher_id, time_out} = req.body
+    const {unique, time_out} = req.body
     try {
-        const teacher = await teacherAttendance.find({teacher_id})
+        const teacher = await teacherAttendance.find({unique})
         if(teacher.length === 0){
             return res.sendStatus(404);
         }
@@ -157,7 +163,7 @@ const updateTeacherAttendance = async (req, res) => { //when end class is clicke
         }
 
         if(teacher[0].time_in !== null && teacher[0].time_out === null){
-            const update = await teacherAttendance.updateOne({"teacher_id": teacher_id}, {$set: {time_out}})
+            const update = await teacherAttendance.updateOne({"unique": unique}, {$set: {time_out}})
             if(update.modifiedCount === 0){
                 return res.sendStatus(404)
             }
