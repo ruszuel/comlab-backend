@@ -194,4 +194,13 @@ const editTeacher = async (req, res) => {
     }
 }
 
-export default {addFaculty, getFaculty, deleteFaculty, getSpecificId, sendFacultyQr, facultyLogIn, addTeacherAttendance, updateTeacherAttendance, editTeacher}
+const getTeacherAttendance = async(req, res) => {
+    try{
+        const teachers = await teacherAttendance.find();
+        res.status(200).json(teachers)
+    }catch(err){
+        console.log(err);
+    }
+}
+
+export default {getTeacherAttendance, addFaculty, getFaculty, deleteFaculty, getSpecificId, sendFacultyQr, facultyLogIn, addTeacherAttendance, updateTeacherAttendance, editTeacher}

@@ -12,5 +12,6 @@ tRoute.post('/teacherQR', teacherController.sendFacultyQr)
 tRoute.post('/addToAttendance', teacherController.addTeacherAttendance)
 tRoute.post('/updateAttendance', teacherController.updateTeacherAttendance)
 tRoute.post('/editTeacher', teacherController.editTeacher)
+tRoute.get('/getTeacherAttendance', teacherController.getTeacherAttendance)
 
 export default tRoute;
