@@ -73,6 +73,7 @@ const teacherAttendanceSchema = mongoose.Schema({
 })
 
 const scheduleSchema = mongoose.Schema({
+    schedule_id: String,
     teacher_id: String,
     teacher_name: String,
     subject: String,

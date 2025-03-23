@@ -1,6 +1,5 @@
 import express from 'express'
 import teacherController from '../controller/teacherController.js';
-import { teacherModel } from '../model/model.js';
 
 const tRoute = express.Router()
 
