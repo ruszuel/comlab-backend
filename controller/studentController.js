@@ -286,6 +286,31 @@ const getTotalAttendance = async (req, res) => {
     }
 }
 
-//pushing just to update vercel
+const editStudent = async (req, res) => {
+    const {student_id, firstname, lastname, email, course, section} =  req.body
+    try {
+        const student = await studentModel.findOne({student_id});
+        if(!student){
+            return res.sendStatus(404);
+        }
 
-export default {addStudent, deleteStudent, sendQr, addToAttendance, getAttendance, deleteAllStudentAttendance, addToClass, updateAttendance, addToAllAttendance, getTotalAttendance}
+        const update = {
+            firstname,
+            lastname,
+            email,
+            course,
+            section,
+        }
+
+        const updating = await studentModel.updateOne(update)
+        if(updating.modifiedCount !== 0){
+            return res.sendStatus(200)
+        }
+    } catch (error) {
+        console.log(error)
+        return res.sendStatus(500)
+    }
+}
+
+export default {addStudent, deleteStudent, sendQr, addToAttendance, getAttendance, deleteAllStudentAttendance,
+    addToClass, updateAttendance, addToAllAttendance, getTotalAttendance, editStudent}
