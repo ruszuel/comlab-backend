@@ -20,5 +20,6 @@ route.post('/updateAttendance', studentController.updateAttendance)
 route.post('/transferToRecords', studentController.addToAllAttendance)
 route.get('/getTotalAttendance', studentController.getTotalAttendance)
 route.post('/editStudent', studentController.editStudent)
+route.post('/editStatus', studentController.editStatus)
 
 export default route;

@@ -306,5 +306,28 @@ const editStudent = async (req, res) => {
     }
 }
 
-export default {addStudent, deleteStudent, sendQr, addToAttendance, getAttendance, deleteAllStudentAttendance,
+const editStatus = async (req, res) => {
+    const { _id } = req.params;
+    const { status } = req.body
+
+    try {
+        const updatedStatus = await records.findByIdAndUpdate(_id,{ status });
+        if (!updatedStatus) {
+            return res.status(404).json({ message: "Not found" });
+        }
+        res.status(200).json({
+            isSuccess: true,
+            updatedStatus
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            isSuccess: false,
+            message: "An error occurred while updating the data.",
+            error: error.message
+        });
+    }
+}
+
+export default {editStatus, addStudent, deleteStudent, sendQr, addToAttendance, getAttendance, deleteAllStudentAttendance,
     addToClass, updateAttendance, addToAllAttendance, getTotalAttendance, editStudent}
