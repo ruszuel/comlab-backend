@@ -93,7 +93,7 @@ const addToClass = async(req, res) => {
             return res.sendStatus(403) //forbid not existing teacher
         }
         console.log(isExist)
-        const teacherName = isExist.firstname + " " + isExist.lastname
+        const teacherName = isExist.lastname + ", " + isExist.firstname
         const students = await studentModel.find({ course, section});
         if(students.length === 0){
             return res.sendStatus(404);
@@ -109,7 +109,7 @@ const addToClass = async(req, res) => {
             status: "Absent",
             teacher_name: teacherName,
             subject,
-            student_name: student.firstname + " " + student.lastname
+            student_name: student.lastname + ", " + student.firstname
         }));
 
         await studentAttendance.insertMany(attendanceEntries);

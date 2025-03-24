@@ -140,7 +140,7 @@ const addTeacherAttendance = async (req, res) => { // when start class is clicke
         if(teacher.length === 0){
             return res.status(404).send("teacher doesn't exist");
         }
-        const teacherName = teacher[0].firstname + " " + teacher[0].lastname;
+        const teacherName = teacher[0].lastname + " " + teacher[0].firstname;
         const course_section = course+"-"+section;
         const newTeacher = new teacherAttendance({teacher_id, teacher_name: teacherName, time_in, time_out: null, course_section, subject, date, unique});
         newTeacher.save();
