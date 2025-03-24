@@ -13,5 +13,6 @@ tRoute.post('/addToAttendance', teacherController.addTeacherAttendance)
 tRoute.post('/updateAttendance', teacherController.updateTeacherAttendance)
 tRoute.post('/editTeacher', teacherController.editTeacher)
 tRoute.get('/getTeacherAttendance', teacherController.getTeacherAttendance)
+tRoute.post('/admin', teacherController.adminLog)
 
 export default tRoute;

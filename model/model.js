@@ -71,6 +71,7 @@ const teacherAttendanceSchema = mongoose.Schema({
     subject: String,
     date: String,
     unique: String,
+    comlab: String,
 })
 
 const scheduleSchema = mongoose.Schema({
@@ -83,6 +84,7 @@ const scheduleSchema = mongoose.Schema({
     course: String,
     section: String,
     subtitle: String,
+    comlab: String
 })
 
 export const studentModel = mongoose.model("students", studentSchema);
