@@ -77,7 +77,7 @@ const getSpecificId = async (req, res) => {
 }
 
 const sendFacultyQr = async (req, res) => { //gumagana
-    const {teacher_id, teacher_email} = req.body
+    const {teacher_id, teacher_email, firstname, lastname} = req.body
     try{
         const path = `/tmp/${teacher_id}.png`
         await QRcode.toFile(path, teacher_id, {scale: 10});
@@ -93,7 +93,7 @@ const sendFacultyQr = async (req, res) => { //gumagana
                     cid: "qrcode",
                 }
             ],
-            html: '<p>Scan the QR Code below:</p><img src="cid:qrcode"/><p>Your login credentials are: </p><p>password: LASTNAME_FIRSTNAME</p>',
+            html: `<p>Scan the QR Code below:</p><img src="cid:qrcode"/><p>Your login credentials are: </p><p>password: ${lastname.toUpperCase()}_${firstname.toUpperCase()}</p>`
         }
 
         transporter.sendMail(mailOptions, (err) => {
