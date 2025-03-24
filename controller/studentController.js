@@ -302,7 +302,7 @@ const editStudent = async (req, res) => {
         }
 
         const updating = await studentModel.updateOne({student_id}, {$set:{student_id, firstname, lastname, email, course, section}})
-        return res.sendStatus(304); // Not Modified
+        return res.sendStatus(200);
 
     } catch (error) {
         console.log(error)
