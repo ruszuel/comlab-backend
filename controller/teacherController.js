@@ -119,7 +119,7 @@ const facultyLogIn = async (req, res) => {// gumagana
         }
 
         if(await bcrytp.compare(password, isRegister[0].password)){
-            return res.sendStatus(200);
+            return res.status(200).json(isRegister);
         }
         
         return res.sendStatus(403);
