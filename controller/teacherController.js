@@ -38,7 +38,7 @@ const addFaculty = async (req, res) => {
         const pass = lastname.toUpperCase() + "_" + firstname.toUpperCase();
         const hashedPassed = await bcrytp.hash(pass, 10);
 
-        const newFaculty = new teacherModel({teacher_id, firstname, lastname, courses, sections, teacher_email, password: hashedPassed, subjects})
+        const newFaculty = new teacherModel({teacher_id, firstname, lastname, courses, sections, teacher_email, password: "TC123", subjects})
         await newFaculty.save();
         res.sendStatus(200)
     } catch (error) {
