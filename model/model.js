@@ -75,15 +75,14 @@ const teacherAttendanceSchema = mongoose.Schema({
 
 const scheduleSchema = mongoose.Schema({
     event_id: String,
-    teacher_name: String,
-    subject: String,
-    room: String,
-    date: String,
+    title: String,
     start: String,
     end: String,
-    title: String,
+    teacher_name: String,
+    subject: String,
     course: String,
-    section: String
+    section: String,
+    subtitle: String,
 })
 
 export const studentModel = mongoose.model("students", studentSchema);

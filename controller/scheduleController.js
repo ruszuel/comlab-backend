@@ -56,9 +56,9 @@ const getAllSchedules = async (req, res) => {
 }
 
 const addSchedules = async (req, res) => {
-    const {event_id, course, teacher_name, section, subject, title, start, end, room, date} = req.body
+    const {event_id, title, start, end, teacher_name, subject, course, section, subtitle} = req.body
     try {
-        const newSched = new schedule({event_id, teacher_name, subject, room, date, start, end, title, course, section})
+        const newSched = new schedule({event_id, title, start, end, teacher_name, subject, course, section, subtitle})
         newSched.save()
         return res.sendStatus(200)
     } catch (error) {
@@ -67,13 +67,13 @@ const addSchedules = async (req, res) => {
 }
 
 const editSched = async (req, res) => {
-    const {event_id, course, teacher_name, section, subject, title, start, end, room, date} = req.body
+    const {event_id, title, start, end, teacher_name, subject, course, section, subtitle} = req.body
     try {
         const event = await schedule.findOne({event_id})
         if(!event){
             return sendStatus(404)
         }
-        const update = await schedule.updateOne({event_id},{$set: {teacher_name, subject, room, date, start, end, title, course, section}})
+        const update = await schedule.updateOne({event_id},{$set: {title, start, end, teacher_name, subject, course, section, subtitle}})
         if(update.modifiedCount === 0){
             return;
         }else{
