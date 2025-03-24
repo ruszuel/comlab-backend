@@ -126,16 +126,23 @@ const updateAttendance = async (req, res) => {
     let status = "Late";
     const philippineTime = moment().tz('Asia/Manila');
     const time = philippineTime.format('HH:mm');
+    const out = time;
+    const formattedTime = moment(out, 'HH:mm');
+    const formattedOuTime = moment(out_time, 'HH:mm')
     try {
         const inClass = await studentAttendance.find({student_id});
         if(inClass.length === 0){
             return res.status(404).json("Student not found!");
         }
 
+        if(formattedTime.isSameOrAfter(formattedOuTime)){
+            return res.sendStatus(406)
+        }
+
         if(inClass[0].time_in !== null && inClass[0].time_out === null){ // check if time_in is not null and timeout null
-            const out = time;
-            const formattedTime = moment(out, 'HH:mm');
-            const formattedOuTime = moment(out_time, 'HH:mm')
+            // const out = time;
+            // const formattedTime = moment(out, 'HH:mm');
+            // const formattedOuTime = moment(out_time, 'HH:mm')
 
             if(formattedTime.isBefore(formattedOuTime)){
                 return res.status(402).send("Class are not done yet")
