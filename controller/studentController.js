@@ -135,7 +135,7 @@ const updateAttendance = async (req, res) => {
             return res.status(404).json("Student not found!");
         }
 
-        if(formattedTime.isSameOrAfter(formattedOuTime)){
+        if(inClass[0].time_in === null && formattedTime.isSameOrAfter(formattedOuTime)){
             return res.sendStatus(406)
         }
 
