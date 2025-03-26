@@ -87,6 +87,18 @@ const scheduleSchema = mongoose.Schema({
     comlab: String
 })
 
+const subjectSchema = mongoose.Schema({
+    subject: String,
+})
+
+const courseSchema = mongoose.Schema({
+    course: String,
+})
+
+const sectionSchema = mongoose.Schema({
+    section: String,
+})
+
 export const studentModel = mongoose.model("students", studentSchema);
 export const teacherModel = mongoose.model("teachers", teacherSchema);
 export const computer = mongoose.model("computers", computerSchema);
@@ -95,7 +107,9 @@ export const studentAttendance = mongoose.model("attendances", attendanceSchema)
 export const records = mongoose.model("attendance_records", recordSchema);
 export const teacherAttendance = mongoose.model("teacher_attendances", teacherAttendanceSchema)
 export const schedule = mongoose.model("schedules", scheduleSchema)
-
+export const subjModel = mongoose.model("subjects", subjectSchema)
+export const crsModel = mongoose.model("courses", courseSchema)
+export const sectionModel = mongoose.model("sections", sectionSchema)
 
 
 
