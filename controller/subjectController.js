@@ -27,20 +27,16 @@ const editSubject = async (req, res) => {
             return res.status(404).json("Subject not found")
         }
 
-        if(edited){
+        if(edited && subjects.subject !== subject){
             return res.status(400).json("Subject already exist")
         }
 
-        if(subjCode){
+        if(subjCode && subjects.subject_code !== subject_code){
             return res.status(403).json("Subject_code already exist")
         }
 
         const edit = await subjModel.updateOne({_id}, {$set: {subject: subject, subject_code}})
-        if(edit.modifiedCount === 0){
-            return
-        }else{
-            return res.sendStatus(200)
-        }
+        return res.sendStatus(200)
     } catch (error) {
         return res.status(500).json("Server error" + error)
     }

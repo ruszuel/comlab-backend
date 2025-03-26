@@ -25,16 +25,12 @@ const editSection = async (req, res) => {
             return res.status(404).json("Section not found")
         }
 
-        if(edited){
+        if(edited && sections.section !== section){
             return res.status(400).json("Section already exist")
         }
 
-        const edit = await sectionModel.updateOne({section}, {$set: {section}})
-        if(edit.modifiedCount === 0){
-            return
-        }else{
-            return res.sendStatus(200)
-        }
+        const edit = await sectionModel.updateOne({_id}, {$set: {section}})
+        return res.sendStatus(200)
     } catch (error) {
         return res.status(500).json("Server error" + error)
     }

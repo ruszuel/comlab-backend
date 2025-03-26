@@ -27,20 +27,16 @@ const editCourse = async (req, res) => {
             return res.status(404).json("Course not found")
         }
 
-        if(edited){
+        if(edited && courses.course !== course){
             return res.status(400).json("Course already exist")
         }
 
-        if(courseCode){
-            return res.status(403).json("Subject_code already exist")
+        if(courseCode && courses.course_code !== course_code){
+            return res.status(403).json("Course_code already exist")
         }
 
-        const edit = await crsModel.updateOne({course}, {$set: {course: edited_course, course_code}})
-        if(edit.modifiedCount === 0){
-            return
-        }else{
-            return res.sendStatus(200)
-        }
+        const edit = await crsModel.updateOne({_id}, {$set: {course: course, course_code}})
+        return res.sendStatus(200)
     } catch (error) {
         return res.status(500).json("Server error" + error)
     }
