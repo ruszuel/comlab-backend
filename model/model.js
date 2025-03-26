@@ -89,10 +89,12 @@ const scheduleSchema = mongoose.Schema({
 
 const subjectSchema = mongoose.Schema({
     subject: String,
+    subject_code: String
 })
 
 const courseSchema = mongoose.Schema({
     course: String,
+    course_code: String
 })
 
 const sectionSchema = mongoose.Schema({

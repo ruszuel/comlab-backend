@@ -1,13 +1,13 @@
 import { crsModel } from "../model/model.js"
 
 const addCourse = async (req, res) => {
-    const {course} = req.body
+    const {course, course_code} = req.body
     try {
         const courses = await crsModel.findOne({course})
         if(courses){
             return res.status(400).json("Course already exist")
         }
-        const newCourse = new crsModel({course})
+        const newCourse = new crsModel({course, course_code})
         newCourse.save();
         res.sendStatus(200);
     } catch (error) {
@@ -16,7 +16,7 @@ const addCourse = async (req, res) => {
 }
 
 const editCourse = async (req, res) => {
-    const {course, edited_course} = req.body
+    const {course, edited_course, course_code} = req.body
     try {
         const courses = await crsModel.findOne({course})
         const edited = await crsModel.findOne({edited_course})
@@ -28,7 +28,7 @@ const editCourse = async (req, res) => {
             return res.status(400).json("Course already exist")
         }
 
-        const edit = await crsModel.updateOne({course}, {$set: {course: edited_course}})
+        const edit = await crsModel.updateOne({course}, {$set: {course: edited_course, course_code}})
         if(edit.modifiedCount === 0){
             return
         }else{

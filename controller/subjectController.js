@@ -1,13 +1,13 @@
 import { subjModel } from "../model/model.js"
 
 const addSubject = async (req, res) => {
-    const {subject} = req.body
+    const {subject, subject_code} = req.body
     try {
-        const subjects = await subjModel.findOne({subject})
+        const subjects = await subjModel.findOne({subject_code})
         if(subjects){
             return res.status(400).json("Subject already exist")
         }
-        const newSubject = new subjModel({subject})
+        const newSubject = new subjModel({subject, subject_code})
         newSubject.save();
         res.sendStatus(200);
     } catch (error) {
@@ -16,7 +16,7 @@ const addSubject = async (req, res) => {
 }
 
 const editSubject = async (req, res) => {
-    const {subject, edited_subject} = req.body
+    const {subject, edited_subject, subject_code} = req.body
     try {
         const subjects = await subjModel.findOne({subject})
         const edited = await subjModel.findOne({edited_subject})
@@ -28,7 +28,7 @@ const editSubject = async (req, res) => {
             return res.status(400).json("Subject already exist")
         }
 
-        const edit = await subjModel.updateOne({subject}, {$set: {subject: edited_subject}})
+        const edit = await subjModel.updateOne({subject}, {$set: {subject: edited_subject, subject_code}})
         if(edit.modifiedCount === 0){
             return
         }else{
