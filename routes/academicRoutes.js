@@ -7,20 +7,20 @@ const route = express.Router()
 
 // Courses
 route.post('/addCourse', courseController.addCourse)
-route.post('/editCourse', courseController.editCourse)
-route.delete('/deleteCourse', courseController.deleteCourse)
+route.post('/editCourse/:_id', courseController.editCourse)
+route.delete('/deleteCourse/:_id', courseController.deleteCourse)
 route.get('/getCourses', courseController.getCourses)
 
 // Subjects
 route.post('/addSubject', subjectController.addSubject)
-route.post('/editSubject', subjectController.editSubject)
-route.delete('/deleteSubject', subjectController.deleteSubject)
+route.post('/editSubject/:_id', subjectController.editSubject)
+route.delete('/deleteSubject/:_id', subjectController.deleteSubject)
 route.get('/getSubjects', subjectController.getSubjects)
 
 // Section
 route.post('/addSection', sectionController.addSection)
-route.post('/editSection', sectionController.editSection)
-route.delete('/deleteSection', sectionController.addSection)
+route.post('/editSection/_id', sectionController.editSection)
+route.delete('/deleteSection/:_id', sectionController.addSection)
 route.get('/getSections', sectionController.getSections)
 
 export default route;

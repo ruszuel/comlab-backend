@@ -16,16 +16,23 @@ const addCourse = async (req, res) => {
 }
 
 const editCourse = async (req, res) => {
-    const {course, edited_course, course_code} = req.body
+    const { _id } = req.params
+    const {course, course_code} = req.body
     try {
-        const courses = await crsModel.findOne({course})
-        const edited = await crsModel.findOne({edited_course})
+        const courses = await crsModel.findOne({_id})
+        const edited = await crsModel.findOne({course})
+        const courseCode = await crsModel.findOne({course_code})
+
         if(!courses){
             return res.status(404).json("Course not found")
         }
 
         if(edited){
             return res.status(400).json("Course already exist")
+        }
+
+        if(courseCode){
+            return res.status(403).json("Subject_code already exist")
         }
 
         const edit = await crsModel.updateOne({course}, {$set: {course: edited_course, course_code}})
@@ -40,13 +47,14 @@ const editCourse = async (req, res) => {
 }
 
 const deleteCourse = async (req, res) => {
-    const {course} = req.body
+    const { _id } = req.params
+    // const {course} = req.body
     try {
-        const courses = await crsModel.findOne({course})
+        const courses = await crsModel.findOne({_id})
         if(!courses){
             return res.status(404).json("Course not found")
         }
-        const deleted = await crsModel.deleteOne({course})
+        const deleted = await crsModel.deleteOne({_id})
         if(deleted.deletedCount === 0){
             return
         }else {

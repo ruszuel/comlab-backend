@@ -16,10 +16,11 @@ const addSection = async (req, res) => {
 }
 
 const editSection = async (req, res) => {
-    const {section, edited_section} = req.body
+    const {_id} = req.params
+    const {section} = req.body
     try {
-        const sections = await sectionModel.findOne({section})
-        const edited = await sectionModel.findOne({section: edited_section})
+        const sections = await sectionModel.findOne({_id})
+        const edited = await sectionModel.findOne({section: section})
         if(!sections){
             return res.status(404).json("Section not found")
         }
@@ -28,7 +29,7 @@ const editSection = async (req, res) => {
             return res.status(400).json("Section already exist")
         }
 
-        const edit = await sectionModel.updateOne({section}, {$set: {edited_section}})
+        const edit = await sectionModel.updateOne({section}, {$set: {section}})
         if(edit.modifiedCount === 0){
             return
         }else{
@@ -40,13 +41,13 @@ const editSection = async (req, res) => {
 }
 
 const deleteSection = async (req, res) => {
-    const {section} = req.body
+    const {_id} = req.params
     try {
-        const sections = await sectionModel.findOne({section})
+        const sections = await sectionModel.findOne({_id})
         if(!sections){
             return res.status(404).json("Section not found")
         }
-        const deleted = await sectionModel.deleteOne({section})
+        const deleted = await sectionModel.deleteOne({_id})
         if(deleted.deletedCount === 0){
             return
         }else {

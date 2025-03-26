@@ -16,10 +16,13 @@ const addSubject = async (req, res) => {
 }
 
 const editSubject = async (req, res) => {
-    const {subject, edited_subject, subject_code} = req.body
+    const { _id } = req.params
+    const {subject, subject_code} = req.body
     try {
-        const subjects = await subjModel.findOne({subject})
-        const edited = await subjModel.findOne({edited_subject})
+        const subjects = await subjModel.findOne({_id})
+        const edited = await subjModel.findOne({subject})
+        const subjCode = await subjModel.findOne({subject_code})
+
         if(!subjects){
             return res.status(404).json("Subject not found")
         }
@@ -28,7 +31,11 @@ const editSubject = async (req, res) => {
             return res.status(400).json("Subject already exist")
         }
 
-        const edit = await subjModel.updateOne({subject}, {$set: {subject: edited_subject, subject_code}})
+        if(subjCode){
+            return res.status(403).json("Subject_code already exist")
+        }
+
+        const edit = await subjModel.updateOne({_id}, {$set: {subject: subject, subject_code}})
         if(edit.modifiedCount === 0){
             return
         }else{
@@ -40,13 +47,14 @@ const editSubject = async (req, res) => {
 }
 
 const deleteSubject = async (req, res) => {
-    const {subject} = req.body
+    const {_id} = req.params
+    // const {subject} = req.body
     try {
-        const subjects = await subjModel.findOne({subject})
+        const subjects = await subjModel.findOne({_id})
         if(!subjects){
             return res.status(404).json("Subject not found")
         }
-        const deleted = await subjModel.deleteOne({subject})
+        const deleted = await subjModel.deleteOne({_id})
         if(deleted.deletedCount === 0){
             return
         }else {
