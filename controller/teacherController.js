@@ -4,6 +4,7 @@ import bcrytp from 'bcrypt'
 import nodemailer from 'nodemailer'
 import QRcode from 'qrcode'
 import { randomUUID } from 'crypto';
+import moment from 'moment-timezone';
 
 dotenv.config()
 const email = process.env.EMAIL;
@@ -132,6 +133,7 @@ const addTeacherAttendance = async (req, res) => { // when start class is clicke
     const {teacher_id, time_in, subject, course, section, unique, comlab} = req.body
     const now = new Date()
     const date = now.toISOString().split('T')[0]
+    const philippineTimeFull = moment().tz('Asia/Manila').format('YYYY-MM-DD');
     // const unique = randomUUID().replace(/-/g, '').slice(0, 5);
 
     console.log(unique.toLocaleUpperCase())
@@ -142,7 +144,7 @@ const addTeacherAttendance = async (req, res) => { // when start class is clicke
         }
         const teacherName = teacher[0].lastname + " " + teacher[0].firstname;
         const course_section = course+"-"+section;
-        const newTeacher = new teacherAttendance({teacher_id, teacher_name: teacherName, time_in, time_out: null, course_section, subject, date, unique, comlab});
+        const newTeacher = new teacherAttendance({teacher_id, teacher_name: teacherName, time_in, time_out: null, course_section, subject, date: philippineTimeFull, unique, comlab});
         newTeacher.save();
         return res.sendStatus(200);
     }catch(error){
