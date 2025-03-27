@@ -5,7 +5,7 @@ const route = express.Router()
 
 route.post('/addAdmin', adminController.addAdmin)
 route.post('/editAdmin/:id', adminController.editAdmin)
-route.delete('/deleteAdmin/:id', adminController.deleteAdmin)
+route.delete('/deleteAdmin/:_id', adminController.deleteAdmin)
 route.get('/getAdmins', adminController.getAdmins)
 
 
