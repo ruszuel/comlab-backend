@@ -19,8 +19,8 @@ route.get('/getSubjects', subjectController.getSubjects)
 
 // Section
 route.post('/addSection', sectionController.addSection)
-route.post('/editSection/_id', sectionController.editSection)
-route.delete('/deleteSection/:_id', sectionController.addSection)
+route.post('/editSection/:_id', sectionController.editSection)
+route.delete('/deleteSection/:_id', sectionController.deleteSection)
 route.get('/getSections', sectionController.getSections)
 
 export default route;
