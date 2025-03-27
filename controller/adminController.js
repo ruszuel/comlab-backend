@@ -19,14 +19,14 @@ const addAdmin = async (req, res) => {
 
 const editAdmin = async (req, res) => {
     const {id} = req.params
-    const {name, pass} = req.body
+    const {name} = req.body
     try {
         const admins = await adminModel.findOne({id})
         if(!admins) {
             return res.sendStatus(404)
         }
 
-        await adminModel.updateOne({id}, {$set:{id, name, password: pass}})
+        await adminModel.updateOne({id}, {$set:{id, name}})
         return res.sendStatus(200)
     } catch (error) {
         return res.sendStatus(500)

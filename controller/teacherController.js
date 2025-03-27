@@ -29,15 +29,14 @@ const getFaculty = async(req, res) => {
 }
 
 const addFaculty = async (req, res) => {
-    const {teacher_id, firstname, lastname, courses, sections, teacher_email, subjects} = req.body
+    const {teacher_id, firstname, lastname, courses, sections, teacher_email, subjects, password} = req.body
     try {
         const isExisting = await teacherModel.findOne({teacher_id})
         if(isExisting){
             return res.sendStatus(403)
         }
-
-        const pass = lastname.toUpperCase() + "_" + firstname.toUpperCase();
-        const hashedPassed = await bcrytp.hash(pass, 10);
+        // const pass = Math.floor(1000 + Math.random() * 9000);
+        const hashedPassed = await bcrytp.hash(password, 10);
 
         const newFaculty = new teacherModel({teacher_id, firstname, lastname, courses, sections, teacher_email, password: hashedPassed, subjects})
         await newFaculty.save();
@@ -78,7 +77,7 @@ const getSpecificId = async (req, res) => {
 }
 
 const sendFacultyQr = async (req, res) => { //gumagana
-    const {teacher_id, teacher_email, firstname, lastname} = req.body
+    const {teacher_id, teacher_email, password} = req.body
     try{
         const path = `/tmp/${teacher_id}.png`
         await QRcode.toFile(path, teacher_id, {scale: 10});
@@ -94,7 +93,7 @@ const sendFacultyQr = async (req, res) => { //gumagana
                     cid: "qrcode",
                 }
             ],
-            html: `<p>Scan the QR Code below:</p><img src="cid:qrcode"/><p>Your login credentials are: </p><p>ID: ${teacher_id} password: ${lastname.toUpperCase()}_${firstname.toUpperCase()}</p>`
+            html: `<p>Scan the QR Code below:</p><img src="cid:qrcode"/><p>Your login credentials are: </p><p>ID: ${password}</p>`
         }
 
         transporter.sendMail(mailOptions, (err) => {
