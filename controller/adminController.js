@@ -34,13 +34,13 @@ const editAdmin = async (req, res) => {
 }
 
 const deleteAdmin = async (req, res) => {
-    const {id} = req.params
+    const {_id} = req.params
     try {
-        const admins = await adminModel.findOne({id})
+        const admins = await adminModel.findOne({_id})
         if(!admins){
             return res.sendStatus(404)
         }
-        await adminModel.deleteOne({id})
+        await adminModel.deleteOne({_id})
         return res.sendStatus(200)
     } catch (error) {
         return res.sendStatus(500)
