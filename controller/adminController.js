@@ -56,4 +56,21 @@ const getAdmins = async (req, res) => {
     }
 }
 
-export default {addAdmin, editAdmin, deleteAdmin, getAdmins}
+const adminLog = async (req, res) => {
+    const {id, password} = req.body
+    try {
+        const admins = await adminModel.findOne({id})
+        if(!admins) {
+            return res.sendStatus(404)
+        }
+
+        if(await bcrypt.compare(password, admins.password)){
+            return res.sendStatus(200)
+        }
+        return res.sendStatus(403);
+    } catch (error) {
+        return res.sendStatus(500)
+    }
+}
+
+export default {addAdmin, editAdmin, deleteAdmin, getAdmins, adminLog}
