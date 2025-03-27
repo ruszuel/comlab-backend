@@ -9,6 +9,8 @@ import computerRoutes from "./routes/computerRoutes.js"
 import computerStatRoutes from "./routes/computerStatRoutes.js"
 import scheduleRoutes from "./routes/scheduleRoutes.js"
 import academicRoutes from "./routes/academicRoutes.js"
+import adminRoutes from "./routes/adminRoutes.js"
+import authRoutes from "./routes/authRoutes.js"
 
 const app = express();
 dotenv.config();
@@ -30,6 +32,8 @@ app.use('/api/computer', computerRoutes)
 app.use('/api/computerStat', computerStatRoutes)
 app.use('/api/schedule', scheduleRoutes)
 app.use('/api/acads', academicRoutes)
+app.use('/api/admin', adminRoutes)
+app.use('/api/auth', authRoutes)
 
 mongoose.connect(MONGOURL).then(() => {
     console.log("database is connected succesfully");

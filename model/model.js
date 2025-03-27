@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 const studentSchema = mongoose.Schema({
     student_id: String,
@@ -101,6 +101,12 @@ const sectionSchema = mongoose.Schema({
     section: String,
 })
 
+const adminSchema = mongoose.Schema({
+    id: String,
+    name: String,
+    password: String,
+})
+
 export const studentModel = mongoose.model("students", studentSchema);
 export const teacherModel = mongoose.model("teachers", teacherSchema);
 export const computer = mongoose.model("computers", computerSchema);
@@ -112,6 +118,7 @@ export const schedule = mongoose.model("schedules", scheduleSchema)
 export const subjModel = mongoose.model("subjects", subjectSchema)
 export const crsModel = mongoose.model("courses", courseSchema)
 export const sectionModel = mongoose.model("sections", sectionSchema)
+export const adminModel = mongoose.model("admins", adminSchema)
 
 
 

@@ -1,5 +1,4 @@
 import { computer } from "../model/model.js";
-import mongoose from "mongoose";
 
 const getList = async(req, res) => {
   try {
