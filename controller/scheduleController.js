@@ -11,7 +11,28 @@ const getAllSchedules = async (req, res) => {
 
 const addSchedules = async (req, res) => {
     const {event_id, title, start, end, teacher_name, subject, course, section, subtitle, comlab} = req.body
+    const startObj = new Date(start);
+    const schedules = await schedule.find()
     try {
+        const isConflicted = schedules.some((s) => {
+            const storedStart = new Date(s.start);
+            const storedEnd = new Date(s.end);
+
+            if (startObj.getTime() === storedStart.getTime()) {
+                return true; // Conflict found
+            }
+
+            if (startObj.getTime() > storedStart.getTime() && startObj.getTime() < storedEnd.getTime()) {
+                return true; // Conflict found
+            }
+
+            return false;
+        })
+
+        if(isConflicted){
+            return res.status(400).json("Conflict on schedule detected!")
+        }
+
         const newSched = new schedule({event_id, title, start, end, teacher_name, subject, course, section, subtitle, comlab})
         newSched.save()
         return res.sendStatus(200)
