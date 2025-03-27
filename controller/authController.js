@@ -8,12 +8,12 @@ const auth = async (req, res) => {
         const faculties = await teacherModel.findOne({teacher_id: id});
         if(admins){
             if(await bcrytp.compare(pass, admins.password)){
-                return res.sendStatus(201)
+                return res.status(201).json(admins)
             }
         }
         if(faculties){
             if(await bcrytp.compare(pass, faculties.password)){
-                return res.sendStatus(200)
+                return res.status(200).json(faculties)
             }
         }
         return res.sendStatus(404)
