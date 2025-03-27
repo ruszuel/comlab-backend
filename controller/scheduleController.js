@@ -12,6 +12,7 @@ const getAllSchedules = async (req, res) => {
 const addSchedules = async (req, res) => {
     const {event_id, title, start, end, teacher_name, subject, course, section, subtitle, comlab} = req.body
     const startObj = new Date(start);
+    const endObj = new Date(end)
     const schedules = await schedule.find()
     try {
         const isConflicted = schedules.some((s) => {
@@ -19,10 +20,13 @@ const addSchedules = async (req, res) => {
             const storedEnd = new Date(s.end);
             if (startObj.getTime() === storedStart.getTime()||
             (startObj.getTime() > storedStart.getTime() && startObj.getTime() < storedEnd.getTime())) {
-                return true; // Conflict found
+                return true;
+            }
+            if (endObj.getTime() > storedStart.getTime() && endObj.getTime() <= storedEnd.getTime()) {
+                return true;
             }
             if (startObj.getTime() > storedStart.getTime() && startObj.getTime() < storedEnd.getTime()) {
-                return true; // Conflict found
+                return true;
             }
             return false;
         })
@@ -33,6 +37,7 @@ const addSchedules = async (req, res) => {
         newSched.save()
         return res.sendStatus(200)
     } catch (error) {
+        console.log(error)
         return res.sendStatus(500)
     }
 }
