@@ -93,7 +93,7 @@ const sendFacultyQr = async (req, res) => { //gumagana
                     cid: "qrcode",
                 }
             ],
-            html: `<p>Scan the QR Code below:</p><img src="cid:qrcode"/><p>Your login credentials are: </p><p>ID: ${password}</p>`
+            html: `<p>Scan the QR Code below:</p><img src="cid:qrcode"/><p>Your login credentials are: </p><p>ID: ${teacher_id} password: ${password}</p>`
         }
 
         transporter.sendMail(mailOptions, (err) => {
