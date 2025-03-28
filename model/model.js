@@ -28,6 +28,7 @@ const computerSchema = mongoose.Schema({
 const computerStatSchema = mongoose.Schema({
     pc_id: String,
     comlabid: String,
+    comlabname: String,
     name: String,
     condition: String,
     status: String,

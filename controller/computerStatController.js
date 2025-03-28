@@ -20,14 +20,14 @@ const getList = async(req, res) => {
 
 const addComputerSet = async (req, res) => {
     const philippineTimeFull = moment().tz('Asia/Manila').format('YYYY-MM-DD : hh:mm A');
-    const {pc_id, comlabid, name, condition, status} = req.body
+    const {pc_id, comlabid, comlabname, name, condition, status} = req.body
     try {
         // const isExisting = await computerStats.findOne({name})
         // if(isExisting){
         //     return res.sendStatus(403)
         // }
 
-        const newComputerSet = new computerStats({pc_id, comlabid, name, condition, status, date_added: philippineTimeFull, updated_at: philippineTimeFull, comment: ""})
+        const newComputerSet = new computerStats({pc_id, comlabid, comlabname, name, condition, status, date_added: philippineTimeFull, updated_at: philippineTimeFull, comment: ""})
         await newComputerSet.save();
         res.status(200).json({
             isSuccess: true,
