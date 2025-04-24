@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import mongoose from "mongoose";
 import cors from 'cors'
 import helmet from 'helmet'
+import fileUpload from 'express-fileupload';
+
 import studentRoutes from './routes/studentRoutes.js'
 import tRoute from './routes/teacherRoutes.js';
 import computerRoutes from "./routes/computerRoutes.js"
@@ -11,6 +13,7 @@ import scheduleRoutes from "./routes/scheduleRoutes.js"
 import academicRoutes from "./routes/academicRoutes.js"
 import adminRoutes from "./routes/adminRoutes.js"
 import authRoutes from "./routes/authRoutes.js"
+import excelRoutes from './routes/excelRoutes.js';
 
 const app = express();
 dotenv.config();
@@ -25,7 +28,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(helmet())
+app.use(helmet());
+app.use(fileUpload());
+
 app.use('/api/student', studentRoutes)
 app.use('/api/teacher', tRoute)
 app.use('/api/computer', computerRoutes)
@@ -34,6 +39,7 @@ app.use('/api/schedule', scheduleRoutes)
 app.use('/api/acads', academicRoutes)
 app.use('/api/admin', adminRoutes)
 app.use('/api/auth', authRoutes)
+app.use('/api/excelRoutes', excelRoutes)
 
 
 mongoose.connect(MONGOURL).then(() => {
