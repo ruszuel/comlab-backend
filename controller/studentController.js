@@ -22,13 +22,19 @@ const addStudent = async (req, res) => {
     const {student_id, firstname, lastname, course, section, email} = req.body
     try {
         const isExisting = await studentModel.findOne({student_id})
+        const isEmailExist = await studentModel.findOne({email})
 
         if(isExisting){
             return res.sendStatus(403);
         }
 
+        if(isEmailExist){
+            return res.status(406).send("Email already in use")
+        }
+
         const newStudent = new studentModel({student_id, firstname, lastname, email, course, section})
         await newStudent.save();
+        await sendQr({student_id, student_email: email})
         res.sendStatus(200)
     } catch (error) {
         console.log(error)
@@ -51,8 +57,8 @@ const deleteStudent = async (req, res) => {
 }
 
 
-const sendQr = async (req, res) => {
-    const {student_id, student_email} = req.body
+const sendQr = async ({student_id, student_email}) => {
+    // const {student_id, student_email} = req.body
     try{
         const path = `/tmp/${student_id}.png`
         await QRcode.toFile(path, student_id, {scale: 10});
@@ -73,13 +79,14 @@ const sendQr = async (req, res) => {
 
         transporter.sendMail(mailOptions, (err) => {
             if(err) {
-                res.status(500).send("Error sending mail: " + err.toString())
-                return
+                // res.status(500).send("Error sending mail: " + err.toString())
+                throw err
             }
-            res.status(200).send('Email has been send');
+            // res.status(200).send('Email has been send');
         })
     }catch(err){
-        res.status(500).send(err);
+        // res.status(500).send(err);
+        throw err;
     }
 }
 

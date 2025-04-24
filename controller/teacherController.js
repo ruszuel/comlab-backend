@@ -32,14 +32,19 @@ const addFaculty = async (req, res) => {
     const {teacher_id, firstname, lastname, courses, sections, teacher_email, subjects, password} = req.body
     try {
         const isExisting = await teacherModel.findOne({teacher_id})
+        const isUsed = await teacherModel.findOne({teacher_email})
         if(isExisting){
             return res.sendStatus(403)
         }
         // const pass = Math.floor(1000 + Math.random() * 9000);
+        if(isUsed){
+            return res.status(406).send("Email already in use")
+        }
         const hashedPassed = await bcrytp.hash(password, 10);
 
         const newFaculty = new teacherModel({teacher_id, firstname, lastname, courses, sections, teacher_email, password: hashedPassed, subjects})
         await newFaculty.save();
+        await sendFacultyQr({teacher_id, teacher_email, password})
         res.sendStatus(200)
     } catch (error) {
         res.sendStatus(500)
@@ -76,8 +81,8 @@ const getSpecificId = async (req, res) => {
     }
 }
 
-const sendFacultyQr = async (req, res) => { //gumagana
-    const {teacher_id, teacher_email, password} = req.body
+const sendFacultyQr = async ({teacher_id, teacher_email, password}) => { //gumagana
+    // const {teacher_id, teacher_email, password} = req.body
     try{
         const path = `/tmp/${teacher_id}.png`
         await QRcode.toFile(path, teacher_id, {scale: 10});
@@ -98,14 +103,15 @@ const sendFacultyQr = async (req, res) => { //gumagana
 
         transporter.sendMail(mailOptions, (err) => {
             if(err) {
-                res.status(500).send("Error sending mail: " + err.toString())
-                return
+                // res.status(500).send("Error sending mail: " + err.toString())
+                // return
+                throw err
             }
-            res.status(200).send('Email has been sent');
+            // res.status(200).send('Email has been sent');
         })
     }catch(err){
         console.log(err)
-        res.status(500).send(err);
+        // res.status(500).send(err);
     }
 }
 
