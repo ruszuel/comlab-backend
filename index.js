@@ -11,7 +11,6 @@ import scheduleRoutes from "./routes/scheduleRoutes.js"
 import academicRoutes from "./routes/academicRoutes.js"
 import adminRoutes from "./routes/adminRoutes.js"
 import authRoutes from "./routes/authRoutes.js"
-import excelRoutes from "./routes/excelRoutes.js"
 
 const app = express();
 dotenv.config();
@@ -35,7 +34,7 @@ app.use('/api/schedule', scheduleRoutes)
 app.use('/api/acads', academicRoutes)
 app.use('/api/admin', adminRoutes)
 app.use('/api/auth', authRoutes)
-app.use('/api/excel', excelRoutes)
+
 
 mongoose.connect(MONGOURL).then(() => {
     console.log("database is connected succesfully");
