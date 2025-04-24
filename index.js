@@ -39,7 +39,7 @@ app.use('/api/schedule', scheduleRoutes)
 app.use('/api/acads', academicRoutes)
 app.use('/api/admin', adminRoutes)
 app.use('/api/auth', authRoutes)
-app.use('/api/excelRoutes', excelRoutes)
+app.use('/api/excel', excelRoutes)
 
 
 mongoose.connect(MONGOURL).then(() => {
