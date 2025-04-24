@@ -64,23 +64,45 @@ const uploadExcel = async (req, res) => {
       const student_id = row.student_id?.toString().trim();
       const firstname = row.firstname?.toString().trim();
       const lastname = row.lastname?.toString().trim();
+      const email = row.email?.toString().trim().toLowerCase(); // Normalize email to lowercase
       const course = row.course?.toString().trim();
       const section = row.section?.toString().trim();
 
-      if (!student_id || !firstname || !lastname || !course || !section) {
+      if (!student_id || !firstname || !lastname || !email || !course || !section) {
         invalidStudents.push({
           ...row,
-          reason: 'Missing required fields (student_id, firstname, lastname, course, or section)'
+          reason: 'Missing required fields (student_id, firstname, lastname, email, course, or section)'
+        });
+        continue;
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        invalidStudents.push({
+          ...row,
+          reason: 'Invalid email format'
         });
         continue;
       }
 
       try {
-        const existingStudent = await studentModel.findOne({ student_id });
+        // Check for existing student_id OR email
+        const existingStudent = await studentModel.findOne({ 
+          $or: [
+            { student_id },
+            { email }
+          ]
+        });
+
         if (existingStudent) {
+          const reason = existingStudent.student_id === student_id 
+            ? 'student_id already exists' 
+            : 'email already exists';
+          
           duplicateStudents.push({
             ...row,
-            reason: 'student_id already exists'
+            reason
           });
           continue;
         }
@@ -89,6 +111,7 @@ const uploadExcel = async (req, res) => {
           student_id,
           firstname,
           lastname,
+          email,
           course,
           section
         });
