@@ -1,9 +1,9 @@
 import { semesterModel } from "../model/model.js"
 
 const addSemester = async (req, res) => {
-    const {semester_name, school_year, start, end, status} = req.body
+    const {semester_type, school_year, start, end, status} = req.body
     try {
-        const newSemester = new semesterModel({semester_name, school_year, start, end, status})
+        const newSemester = new semesterModel({semester_type, school_year, start, end, status})
         newSemester.save();
         res.sendStatus(200);
     } catch (error) {
@@ -13,9 +13,9 @@ const addSemester = async (req, res) => {
 
 const editSemester = async (req, res) => {
     const {_id} = req.params
-    const {semester_name, school_year, start, end, status} = req.body
+    const {semester_type, school_year, start, end, status} = req.body
     try {
-        await semesterModel.updateOne({_id}, {$set: {semester_name, school_year, start, end, status}})
+        await semesterModel.updateOne({_id}, {$set: {semester_type, school_year, start, end, status}})
         return res.sendStatus(200)
     } catch (error) {
         return res.status(500).json("Server error" + error)

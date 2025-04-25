@@ -109,7 +109,7 @@ const adminSchema = mongoose.Schema({
 })
 
 const semesterSchema = mongoose.Schema({
-    semester_name: String,
+    semester_type: String,
     school_year: String,
     start: String,
     end: String,
