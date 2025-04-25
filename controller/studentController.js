@@ -304,8 +304,14 @@ const editStudent = async (req, res) => {
     const {student_id, firstname, lastname, email, course, section} =  req.body
     try {
         const student = await studentModel.findOne({student_id});
+        const isEmailExist = await studentModel.findOne({email});
+
         if(!student){
             return res.sendStatus(404);
+        }
+
+        if(isEmailExist && isEmailExist.student_id !== student_id){
+            return res.status(406).send("Email already in use");
         }
 
         const updating = await studentModel.updateOne({student_id}, {$set:{student_id, firstname, lastname, email, course, section}})

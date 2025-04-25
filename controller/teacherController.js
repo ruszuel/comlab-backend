@@ -185,16 +185,17 @@ const editTeacher = async (req, res) => {
     const {teacher_id, firstname, lastname, teacher_email, courses, sections, subjects} =  req.body
     try {
         const teacher = await teacherModel.findOne({teacher_id});
+        const isEmailExist = await teacherModel.findOne({teacher_email})
         if(!teacher){
             return res.sendStatus(404);
         }
 
-        const updating = await teacherModel.updateOne({teacher_id}, {$set:{teacher_id, firstname, lastname, courses, sections, teacher_email, subjects}})
-        if(updating.modifiedCount !== 0){
-            return res.sendStatus(200)
-        }else {
-            return res.sendStatus(304); // Not Modified
+        if(isEmailExist && isEmailExist.teacher_id !== teacher_id){
+            return res.status(406).send("Email already in use");
         }
+
+        const updating = await teacherModel.updateOne({teacher_id}, {$set:{teacher_id, firstname, lastname, courses, sections, teacher_email, subjects}})
+        return res.sendStatus(200)
     } catch (error) {
         console.log(error)
         return res.sendStatus(500)
