@@ -2,6 +2,7 @@ import express from 'express'
 import courseController from '../controller/courseController.js';
 import subjectController from '../controller/subjectController.js';
 import sectionController from '../controller/sectionController.js';
+import semesterController from '../controller/semesterController.js';
 
 const route = express.Router()
 
@@ -22,5 +23,11 @@ route.post('/addSection', sectionController.addSection)
 route.post('/editSection/:_id', sectionController.editSection)
 route.delete('/deleteSection/:_id', sectionController.deleteSection)
 route.get('/getSections', sectionController.getSections)
+
+// Semester
+route.post('/addSemester', semesterController.addSemester)
+route.post('/editSemester/:_id', semesterController.editSemester)
+route.delete('/deleteSemester/:_id', semesterController.deleteSemester)
+route.get('/getSemester', semesterController.getSemester)
 
 export default route;

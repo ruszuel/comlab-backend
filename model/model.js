@@ -108,6 +108,14 @@ const adminSchema = mongoose.Schema({
     password: String,
 })
 
+const semesterSchema = mongoose.Schema({
+    semester_name: String,
+    school_year: String,
+    start: String,
+    end: String,
+    status: String, // active or inactive
+})
+
 export const studentModel = mongoose.model("students", studentSchema);
 export const teacherModel = mongoose.model("teachers", teacherSchema);
 export const computer = mongoose.model("computers", computerSchema);
@@ -120,6 +128,6 @@ export const subjModel = mongoose.model("subjects", subjectSchema)
 export const crsModel = mongoose.model("courses", courseSchema)
 export const sectionModel = mongoose.model("sections", sectionSchema)
 export const adminModel = mongoose.model("admins", adminSchema)
-
+export const semesterModel = mongoose.model("semester", semesterSchema)
 
 
