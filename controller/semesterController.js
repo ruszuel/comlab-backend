@@ -26,7 +26,7 @@ const deleteSemester = async (req, res) => {
     const {_id} = req.params
     try {
         const semester = await semesterModel.findOne({_id})
-        if(!sections){
+        if(!semester){
             return res.status(404).json("Semester not found")
         }
         const deleted = await semesterModel.deleteOne({_id})
