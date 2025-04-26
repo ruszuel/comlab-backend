@@ -137,12 +137,16 @@ const updateStatus = async (req, res) => {
             }
 
             if (semester.status !== newStatus) {
-                await semesterModel.updateOne({ _id: semester._id }, { $set: { status: newStatus } });
+                await semesterModel.updateOne(
+                    { _id: semester._id },
+                    { $set: { status: newStatus } }
+                );
             }
         }
 
-        const updated = await semesterModel.find();
-        return res.status(200).json(updated);
+        // Fetch the updated data
+        const updatedSemesters = await semesterModel.find();
+        return res.status(200).json(updatedSemesters);
     } catch (error) {
         return res.status(500).json("Server error: " + error.message);
     }
