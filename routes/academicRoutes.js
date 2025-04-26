@@ -29,6 +29,6 @@ route.post('/addSemester', semesterController.addSemester)
 route.post('/editSemester/:_id', semesterController.editSemester)
 route.delete('/deleteSemester/:_id', semesterController.deleteSemester)
 route.get('/getSemester', semesterController.getSemester)
-route.get('/editStatus', semesterController.updateStatus)
+route.get('/updateStatus', semesterController.updateStatus)
 
 export default route;
