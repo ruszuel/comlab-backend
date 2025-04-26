@@ -1,4 +1,5 @@
 import { semesterModel } from "../model/model.js"
+import moment from "moment-timezone";
 
 // Helper function to check date conflicts
 const checkDateConflict = async (start, end, excludeId = null) => {
@@ -36,16 +37,23 @@ const checkDateConflict = async (start, end, excludeId = null) => {
 
 const addSemester = async (req, res) => {
     const { semester_type, school_year, start, end, status } = req.body;
-    
+
     try {
         // Check for date conflicts
         const conflicts = await checkDateConflict(start, end);
+        const statusConflict = await semesterModel.findOne({status: "Ongoing"})
         
         if (conflicts) {
             return res.status(400).json({
                 error: "Date conflict with existing semester(s)",
                 conflicts
             });
+        }
+
+        if(statusConflict && status === "Ongoing"){
+            return res.status(405).json({
+                error: "There is already an ongoing semester"
+            })
         }
         
         const newSemester = new semesterModel({ semester_type, school_year, start, end, status });
@@ -109,4 +117,35 @@ const getSemester = async (req, res) => {
     }
 }
 
-export default {addSemester, editSemester, deleteSemester, getSemester}
+const updateStatus = async (req, res) => {
+    const currentDate = moment().tz('Asia/Manila');
+
+    try {
+        const semesters = await semesterModel.find();
+
+        for (const semester of semesters) {
+            const start = moment(semester.start).tz('Asia/Manila');
+            const end = moment(semester.end).tz('Asia/Manila');
+
+            let newStatus;
+            if (currentDate.isAfter(end)) {
+                newStatus = "Finished";
+            } else if (currentDate.isBefore(start)) {
+                newStatus = "Upcoming";
+            } else {
+                newStatus = "Ongoing";
+            }
+
+            if (semester.status !== newStatus) {
+                await semesterModel.updateOne({ _id: semester._id }, { $set: { status: newStatus } });
+            }
+        }
+
+        const updated = await semesterModel.find();
+        return res.status(200).json(updated);
+    } catch (error) {
+        return res.status(500).json("Server error: " + error.message);
+    }
+}
+
+export default {addSemester, editSemester, deleteSemester, getSemester, updateStatus}
