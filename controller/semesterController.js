@@ -124,8 +124,8 @@ const updateStatus = async (req, res) => {
         const semesters = await semesterModel.find();
 
         for (const semester of semesters) {
-            const start = moment(semester.start).tz('Asia/Manila');
-            const end = moment(semester.end).tz('Asia/Manila');
+            const start = moment(new Date(semester.start)).tz('Asia/Manila');
+            const end = moment(new Date(semester.end)).tz('Asia/Manila');
 
             let newStatus;
             if (currentDate.isAfter(end)) {
