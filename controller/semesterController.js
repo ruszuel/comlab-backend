@@ -1,27 +1,87 @@
 import { semesterModel } from "../model/model.js"
 
+// Helper function to check date conflicts
+const checkDateConflict = async (start, end, excludeId = null) => {
+    const newStart = new Date(start);
+    const newEnd = new Date(end);
+    
+    // Find all semesters that might conflict
+    const query = {
+        $or: [
+            { start: { $gte: start, $lte: end } },
+            { end: { $gte: start, $lte: end } },
+            { $and: [{ start: { $lte: start } }, { end: { $gte: end } }] },
+            { $and: [{ start: { $gte: start } }, { end: { $lte: end } }] }
+        ]
+    };
+    
+    if (excludeId) {
+        query._id = { $ne: excludeId };
+    }
+    
+    const conflictingSemesters = await semesterModel.find(query);
+    
+    if (conflictingSemesters.length > 0) {
+        const conflicts = conflictingSemesters.map(sem => ({
+            semester_type: sem.semester_type,
+            school_year: sem.school_year,
+            start: sem.start,
+            end: sem.end
+        }));
+        return conflicts;
+    }
+    
+    return null;
+};
+
 const addSemester = async (req, res) => {
-    const {semester_type, school_year, start, end, status} = req.body
+    const { semester_type, school_year, start, end, status } = req.body;
+    
     try {
-        const newSemester = new semesterModel({semester_type, school_year, start, end, status})
-        newSemester.save();
+        // Check for date conflicts
+        const conflicts = await checkDateConflict(start, end);
+        
+        if (conflicts) {
+            return res.status(400).json({
+                error: "Date conflict with existing semester(s)",
+                conflicts
+            });
+        }
+        
+        const newSemester = new semesterModel({ semester_type, school_year, start, end, status });
+        await newSemester.save();
         res.sendStatus(200);
     } catch (error) {
-        return res.status(500).json("Server error" + error)
+        return res.status(500).json("Server error: " + error);
     }
-}
+};
 
 const editSemester = async (req, res) => {
-    const {_id} = req.params
-    const {semester_type, school_year, start, end, status} = req.body
+    const { _id } = req.params;
+    const { semester_type, school_year, start, end, status } = req.body;
+    
     try {
-        await semesterModel.updateOne({_id}, {$set: {semester_type, school_year, start, end, status}})
-        return res.sendStatus(200)
+        // Check for date conflicts, excluding the current semester we're editing
+        const conflicts = await checkDateConflict(start, end, _id);
+        
+        if (conflicts) {
+            return res.status(400).json({
+                error: "Date conflict with existing semester(s)",
+                conflicts
+            });
+        }
+        
+        await semesterModel.updateOne(
+            { _id },
+            { $set: { semester_type, school_year, start, end, status } }
+        );
+        return res.sendStatus(200);
     } catch (error) {
-        return res.status(500).json("Server error" + error)
+        return res.status(500).json("Server error: " + error);
     }
-}
+};
 
+// The rest of your functions remain the same
 const deleteSemester = async (req, res) => {
     const {_id} = req.params
     try {
