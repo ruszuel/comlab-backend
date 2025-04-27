@@ -87,7 +87,8 @@ const scheduleSchema = mongoose.Schema({
     course: String,
     section: String,
     subtitle: String,
-    comlab: String
+    comlab: String,
+    comlab_id: String
 })
 
 const subjectSchema = mongoose.Schema({
