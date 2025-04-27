@@ -16,19 +16,12 @@ const addSchedules = async (req, res) => {
     const schedules = await schedule.find({comlab_id})
     try {
         const isConflicted = schedules.some((s) => {
-            const storedStart = new Date(s.start);
-            const storedEnd = new Date(s.end);
-            if (startObj.getTime() === storedStart.getTime()||
-            (startObj.getTime() > storedStart.getTime() && startObj.getTime() < storedEnd.getTime())) {
-                return true;
-            }
-            if (endObj.getTime() > storedStart.getTime() && endObj.getTime() <= storedEnd.getTime()) {
-                return true;
-            }
-            if (startObj.getTime() > storedStart.getTime() && startObj.getTime() < storedEnd.getTime()) {
-                return true;
-            }
-            return false;
+            const storedStart = new Date(s.start).getTime();
+            const storedEnd = new Date(s.end).getTime();
+            const newStart = startObj.getTime();
+            const newEnd = endObj.getTime();
+            
+            return newStart < storedEnd && newEnd > storedStart;
         })
         if(isConflicted){
             return res.status(400).json("Conflict on schedule detected!")
