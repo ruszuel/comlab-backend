@@ -34,7 +34,7 @@ const addStudent = async (req, res) => {
 
         const newStudent = new studentModel({student_id, firstname, lastname, email, course, section})
         await newStudent.save();
-        await sendQr({student_id, student_email: email})
+        // await sendQr({student_id, student_email: email})
         res.sendStatus(200)
     } catch (error) {
         console.log(error)
@@ -57,8 +57,8 @@ const deleteStudent = async (req, res) => {
 }
 
 
-const sendQr = async ({student_id, student_email}) => {
-    // const {student_id, student_email} = req.body
+const sendQr = async (req, res) => {
+    const {student_id, student_email} = req.body
     try{
         const path = `/tmp/${student_id}.png`
         await QRcode.toFile(path, student_id, {scale: 10});
@@ -79,14 +79,12 @@ const sendQr = async ({student_id, student_email}) => {
 
         transporter.sendMail(mailOptions, (err) => {
             if(err) {
-                // res.status(500).send("Error sending mail: " + err.toString())
-                throw err
+                return res.status(500).send("Error sending mail: " + err.toString())
             }
-            // res.status(200).send('Email has been send');
+            return res.status(200).send('Email has been sent');
         })
     }catch(err){
-        // res.status(500).send(err);
-        throw err;
+        return res.status(500).send(err);
     }
 }
 

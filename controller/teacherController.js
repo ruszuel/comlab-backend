@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import bcrytp from 'bcrypt'
 import nodemailer from 'nodemailer'
 import QRcode from 'qrcode'
-import { randomUUID } from 'crypto';
 import moment from 'moment-timezone';
 
 dotenv.config()
@@ -44,7 +43,7 @@ const addFaculty = async (req, res) => {
 
         const newFaculty = new teacherModel({teacher_id, firstname, lastname, courses, sections, teacher_email, password: hashedPassed, subjects})
         await newFaculty.save();
-        await sendFacultyQr({teacher_id, teacher_email, password})
+        // await sendFacultyQr({teacher_id, teacher_email, password})
         res.sendStatus(200)
     } catch (error) {
         res.sendStatus(500)
@@ -67,22 +66,22 @@ const deleteFaculty = async (req, res) => {
 }
 
 const getSpecificId = async (req, res) => {
-    const { teacher_id } = req.params; 
+    const { teacher_id } = req.params;
     try {
-        const teacher = await teacherModel.findOne({ teacher_id });  
+        const teacher = await teacherModel.findOne({ teacher_id });
         if (!teacher) {
             return res.sendStatus(404);
         }
 
-        res.status(200).json({isSuccess: true, teacher}); 
+        res.status(200).json({isSuccess: true, teacher});
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: error.message }); 
+        res.status(500).json({ error: error.message });
     }
 }
 
-const sendFacultyQr = async ({teacher_id, teacher_email, password}) => { //gumagana
-    // const {teacher_id, teacher_email, password} = req.body
+const sendFacultyQr = async (req, res) => { //gumagana
+    const {teacher_id, teacher_email, password} = req.body
     try{
         const path = `/tmp/${teacher_id}.png`
         await QRcode.toFile(path, teacher_id, {scale: 10});
@@ -103,15 +102,15 @@ const sendFacultyQr = async ({teacher_id, teacher_email, password}) => { //gumag
 
         transporter.sendMail(mailOptions, (err) => {
             if(err) {
-                // res.status(500).send("Error sending mail: " + err.toString())
-                // return
-                throw err
+                res.status(500).send("Error sending mail: " + err.toString())
+                return
+                // throw err
             }
-            // res.status(200).send('Email has been sent');
+            res.status(200).send('Email has been sent');
         })
     }catch(err){
-        console.log(err)
-        // res.status(500).send(err);
+        // console.log(err)
+        res.status(500).send(err);
     }
 }
 
