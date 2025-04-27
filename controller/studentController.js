@@ -74,7 +74,7 @@ const sendQr = async (req, res) => {
                     cid: "qrcode",
                 }
             ],
-            html: '<p>Scan the QR Code below:</p><img src="cid:qrcode"/>',
+            html: '<p>Scan the QR Code below for your attendance:</p><img src="cid:qrcode"/>',
         }
 
         transporter.sendMail(mailOptions, (err) => {
