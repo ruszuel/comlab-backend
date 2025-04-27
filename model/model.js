@@ -63,6 +63,8 @@ const recordSchema = mongoose.Schema({
     teacher_name: String,
     subject: String,
     student_name: String,
+    school_year: String,
+    semester: String
 })
 
 const teacherAttendanceSchema = mongoose.Schema({
@@ -75,6 +77,8 @@ const teacherAttendanceSchema = mongoose.Schema({
     date: String,
     unique: String,
     comlab: String,
+    school_year: String,
+    semester: String
 })
 
 const scheduleSchema = mongoose.Schema({

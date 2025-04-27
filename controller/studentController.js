@@ -91,7 +91,7 @@ const sendQr = async ({student_id, student_email}) => {
 }
 
 const addToClass = async(req, res) => {
-    const {teacher_id, course, section, subject} = req.body
+    const {teacher_id, course, section, subject, semester, school_year} = req.body
     const now = new Date();
     const date = now.toISOString().split('T')[0]
     try {
@@ -116,7 +116,9 @@ const addToClass = async(req, res) => {
             status: "Absent",
             teacher_name: teacherName,
             subject,
-            student_name: student.lastname + ", " + student.firstname
+            student_name: student.lastname + ", " + student.firstname,
+            semester: semester,
+            school_year: school_year
         }));
 
         await studentAttendance.insertMany(attendanceEntries);
