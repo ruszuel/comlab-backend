@@ -2,9 +2,14 @@ import { semesterModel } from "../model/model.js"
 import moment from "moment-timezone";
 
 // Helper function to check date conflicts
+const parseDate = (dateStr) => {
+    const [month, day, year] = dateStr.split('-').map(Number);
+    return new Date(year, month - 1, day);
+};
+
 const checkDateConflict = async (start, end, excludeId = null) => {
-    const newStart = new Date(start);
-    const newEnd = new Date(end);
+    const newStart = parseDate(start);
+    const newEnd = parseDate(end);
     
     // Find all semesters that might conflict
     const query = {
@@ -45,10 +50,8 @@ const addSemester = async (req, res) => {
     try {
         // Check for date conflicts
         const conflicts = await checkDateConflict(start, end);
-        const statusConflict = await semesterModel.findOne({status: "Ongoing"})
+        const statusConflict = await semesterModel.findOne({status: "Ongoing"});
         const sy = await semesterModel.find({school_year});
-
-        console.log(sy)
         
         if (conflicts) {
             return res.status(400).json({
@@ -57,21 +60,29 @@ const addSemester = async (req, res) => {
             });
         }
         
-        if(sy !== null) {
-            for(const year of sy){
-                if(year.school_year === school_year && year.semester_type === semester_type){
-                    return res.status(405).send("semester already exist")
-                }
-            }
+        const existingSemester = await semesterModel.findOne({school_year, semester_type});
+        
+        if (existingSemester) {
+            return res.status(405).send("Semester already exists");
         }
+        
+        if (status === "Ongoing" && statusConflict) {
+            return res.status(400).json({
+                error: "There can only be one Ongoing semester at a time"
+            });
+        }
+        
+        const parsedStart = parseDate(start);
+        const parsedEnd = parseDate(end);
         
         const newSemester = new semesterModel({ 
             semester_type, 
             school_year, 
-            start, 
-            end, 
+            start: parsedStart, 
+            end: parsedEnd, 
             status 
         });
+        
         await newSemester.save();
         res.sendStatus(200);
     } catch (error) {
