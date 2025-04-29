@@ -68,8 +68,8 @@ const addSemester = async (req, res) => {
         const newSemester = new semesterModel({ 
             semester_type, 
             school_year, 
-            start: new Date(start), 
-            end: new Date(end), 
+            start, 
+            end, 
             status 
         });
         await newSemester.save();
