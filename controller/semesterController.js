@@ -2,6 +2,7 @@ import { semesterModel } from "../model/model.js"
 import moment from "moment-timezone";
 
 // Helper function to check date conflicts
+
 const checkDateConflict = async (start, end, excludeId = null) => {
     const newStart = new Date(start);
     const newEnd = new Date(end);
@@ -37,32 +38,16 @@ const checkDateConflict = async (start, end, excludeId = null) => {
 
 const addSemester = async (req, res) => {
     const { semester_type, school_year, start, end, status } = req.body;
-
+    
     try {
         // Check for date conflicts
         const conflicts = await checkDateConflict(start, end);
-        const statusConflict = await semesterModel.findOne({status: "Ongoing"})
-        const sy = await semesterModel.find({school_year});
-
-        console.log(sy)
         
         if (conflicts) {
             return res.status(400).json({
                 error: "Date conflict with existing semester(s)",
                 conflicts
             });
-        }
-
-        if(statusConflict && status === "Ongoing"){
-            return res.status(405).json({
-                error: "There is already an ongoing semester"
-            })
-        }
-
-        for(const year of sy){
-            if(year.school_year === school_year && year.semester_type === semester_type){
-                return res.status(405).send("semester already exist")
-            }
         }
         
         const newSemester = new semesterModel({ semester_type, school_year, start, end, status });

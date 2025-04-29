@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import bcrytp from 'bcrypt'
 import nodemailer from 'nodemailer'
 import QRcode from 'qrcode'
+import { randomUUID } from 'crypto';
 import moment from 'moment-timezone';
 
 dotenv.config()
@@ -43,7 +44,7 @@ const addFaculty = async (req, res) => {
 
         const newFaculty = new teacherModel({teacher_id, firstname, lastname, courses, sections, teacher_email, password: hashedPassed, subjects})
         await newFaculty.save();
-        // await sendFacultyQr({teacher_id, teacher_email, password})
+        await sendFacultyQr({teacher_id, teacher_email, password})
         res.sendStatus(200)
     } catch (error) {
         res.sendStatus(500)
@@ -66,22 +67,22 @@ const deleteFaculty = async (req, res) => {
 }
 
 const getSpecificId = async (req, res) => {
-    const { teacher_id } = req.params;
+    const { teacher_id } = req.params; 
     try {
-        const teacher = await teacherModel.findOne({ teacher_id });
+        const teacher = await teacherModel.findOne({ teacher_id });  
         if (!teacher) {
             return res.sendStatus(404);
         }
 
-        res.status(200).json({isSuccess: true, teacher});
+        res.status(200).json({isSuccess: true, teacher}); 
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message }); 
     }
 }
 
-const sendFacultyQr = async (req, res) => { //gumagana
-    const {teacher_id, teacher_email, password} = req.body
+const sendFacultyQr = async ({teacher_id, teacher_email, password}) => { //gumagana
+    // const {teacher_id, teacher_email, password} = req.body
     try{
         const path = `/tmp/${teacher_id}.png`
         await QRcode.toFile(path, teacher_id, {scale: 10});
@@ -102,15 +103,15 @@ const sendFacultyQr = async (req, res) => { //gumagana
 
         transporter.sendMail(mailOptions, (err) => {
             if(err) {
-                res.status(500).send("Error sending mail: " + err.toString())
-                return
-                // throw err
+                // res.status(500).send("Error sending mail: " + err.toString())
+                // return
+                throw err
             }
-            res.status(200).send('Email has been sent');
+            // res.status(200).send('Email has been sent');
         })
     }catch(err){
-        // console.log(err)
-        res.status(500).send(err);
+        console.log(err)
+        // res.status(500).send(err);
     }
 }
 
@@ -134,10 +135,11 @@ const facultyLogIn = async (req, res) => {// gumagana
 }
 
 const addTeacherAttendance = async (req, res) => { // when start class is clicked, GUMAGANA
-    const {teacher_id, time_in, subject, course, section, unique, comlab, semester, school_year} = req.body
+    const {teacher_id, time_in, subject, course, section, unique, comlab} = req.body
     const now = new Date()
     const date = now.toISOString().split('T')[0]
     const philippineTimeFull = moment().tz('Asia/Manila').format('YYYY-MM-DD');
+    // const unique = randomUUID().replace(/-/g, '').slice(0, 5);
 
     console.log(unique.toLocaleUpperCase())
     try{
@@ -147,7 +149,7 @@ const addTeacherAttendance = async (req, res) => { // when start class is clicke
         }
         const teacherName = teacher[0].lastname + " " + teacher[0].firstname;
         const course_section = course+"-"+section;
-        const newTeacher = new teacherAttendance({teacher_id, teacher_name: teacherName, time_in, time_out: null, course_section, subject, date: philippineTimeFull, unique, comlab, semester, school_year});
+        const newTeacher = new teacherAttendance({teacher_id, teacher_name: teacherName, time_in, time_out: null, course_section, subject, date: philippineTimeFull, unique, comlab});
         newTeacher.save();
         return res.sendStatus(200);
     }catch(error){
