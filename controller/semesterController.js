@@ -3,33 +3,37 @@ import moment from "moment-timezone";
 
 // Helper function to check date conflicts
 const checkDateConflict = async (start, end, excludeId = null) => {
-    const newStart = moment.tz(start, "MM-DD-YYYY", "Asia/Manila").startOf('day');
-    const newEnd = moment.tz(end, "MM-DD-YYYY", "Asia/Manila").endOf('day');
-
+    const newStart = new Date(start);
+    const newEnd = new Date(end);
+    
+    // Find all semesters that might conflict
     const query = {
-      $or: [
-        { start: { $lte: newEnd.toDate() }, end: { $gte: newStart.toDate() } }
-      ]
+        $or: [
+            { start: { $gte: start, $lte: end } },
+            { end: { $gte: start, $lte: end } },
+            { $and: [{ start: { $lte: start } }, { end: { $gte: end } }] },
+            { $and: [{ start: { $gte: start } }, { end: { $lte: end } }] }
+        ]
     };
-  
+    
     if (excludeId) {
-      query._id = { $ne: excludeId };
+        query._id = { $ne: excludeId };
     }
-  
+    
     const conflictingSemesters = await semesterModel.find(query);
-  
+
     if (conflictingSemesters.length > 0) {
-      const conflicts = conflictingSemesters.map(sem => ({
-        semester_type: sem.semester_type,
-        school_year: sem.school_year,
-        start: moment(sem.start).tz("Asia/Manila").format("MM-DD-YYYY"),
-        end: moment(sem.end).tz("Asia/Manila").format("MM-DD-YYYY")
-      }));
-      return conflicts;
+        const conflicts = conflictingSemesters.map(sem => ({
+            semester_type: sem.semester_type,
+            school_year: sem.school_year,
+            start: sem.start,
+            end: sem.end
+        }));
+        return conflicts;
     }
-  
+    
     return null;
-  };
+};
 
 const addSemester = async (req, res) => {
     const { semester_type, school_year, start, end, status } = req.body;
