@@ -44,7 +44,7 @@ const addFaculty = async (req, res) => {
 
         const newFaculty = new teacherModel({teacher_id, firstname, lastname, courses, sections, teacher_email, password: hashedPassed, subjects})
         await newFaculty.save();
-        await sendFacultyQr({teacher_id, teacher_email, password})
+        sendFacultyQr({teacher_id, teacher_email, password})
         res.sendStatus(200)
     } catch (error) {
         res.sendStatus(500)

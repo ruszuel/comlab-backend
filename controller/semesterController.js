@@ -53,9 +53,11 @@ const addSemester = async (req, res) => {
             });
         }
         
-        for(const year of sy){
-            if(year.school_year === school_year && year.semester_type === semester_type){
-                return res.status(405).send("semester already exist")
+        if(sy !== null) {
+            for(const year of sy){
+                if(year.school_year === school_year && year.semester_type === semester_type){
+                    return res.status(405).send("semester already exist")
+                }
             }
         }
         
