@@ -2,52 +2,72 @@ import { semesterModel } from "../model/model.js"
 import moment from "moment-timezone";
 
 // Helper function to check date conflicts
-
 const checkDateConflict = async (start, end, excludeId = null) => {
-    const newStart = new Date(start);
-    const newEnd = new Date(end);
-    
-    // Find all semesters that might conflict
     const query = {
         $or: [
             { start: { $gte: start, $lte: end } },
             { end: { $gte: start, $lte: end } },
-            { $and: [{ start: { $lte: start } }, { end: { $gte: end } }] },
-            { $and: [{ start: { $gte: start } }, { end: { $lte: end } }] }
+            { start: { $lte: start }, end: { $gte: end } },
+            { start: { $gte: start }, end: { $lte: end } },
+            { 
+                $expr: { 
+                    $or: [
+                        { $and: [
+                            { $ne: [{ $year: "$start" }, { $year: "$end" }] },
+                            { $or: [
+                                { $lte: ["$start", end] },
+                                { $gte: ["$end", start] }
+                            ]}
+                        ]},
+                        { $and: [
+                            { $ne: [{ $year: start }, { $year: end }] },
+                            { $or: [
+                                { $lte: ["$start", end] },
+                                { $gte: ["$end", start] }
+                            ]}
+                        ]}
+                    ]
+                }
+            }
         ]
     };
-    
-    if (excludeId) {
-        query._id = { $ne: excludeId };
-    }
-    
+
+    if (excludeId) query._id = { $ne: excludeId };
+
     const conflictingSemesters = await semesterModel.find(query);
     
-    if (conflictingSemesters.length > 0) {
-        const conflicts = conflictingSemesters.map(sem => ({
+    return conflictingSemesters.length > 0
+        ? conflictingSemesters.map(sem => ({
             semester_type: sem.semester_type,
             school_year: sem.school_year,
             start: sem.start,
             end: sem.end
-        }));
-        return conflicts;
-    }
-    
-    return null;
+        }))
+        : null;
 };
 
 const addSemester = async (req, res) => {
     const { semester_type, school_year, start, end, status } = req.body;
-    
+
     try {
         // Check for date conflicts
         const conflicts = await checkDateConflict(start, end);
+        const statusConflict = await semesterModel.findOne({status: "Ongoing"})
+        const sy = await semesterModel.find({school_year});
+
+        console.log(sy)
         
         if (conflicts) {
             return res.status(400).json({
                 error: "Date conflict with existing semester(s)",
                 conflicts
             });
+        }
+        
+        for(const year of sy){
+            if(year.school_year === school_year && year.semester_type === semester_type){
+                return res.status(405).send("semester already exist")
+            }
         }
         
         const newSemester = new semesterModel({ semester_type, school_year, start, end, status });
