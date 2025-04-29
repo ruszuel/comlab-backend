@@ -2,26 +2,17 @@ import { semesterModel } from "../model/model.js"
 import moment from "moment-timezone";
 
 // Helper function to check date conflicts
-const parseDate = (dateStr) => {
-    const [month, day, year] = dateStr.split('-').map(Number);
-    return new Date(year, month - 1, day);
-};
-
 const checkDateConflict = async (start, end, excludeId = null) => {
-    const newStart = parseDate(start);
-    const newEnd = parseDate(end);
+    const newStart = new Date(start);
+    const newEnd = new Date(end);
     
     // Find all semesters that might conflict
     const query = {
         $or: [
-            // Existing semester starts during new semester
-            { start: { $gte: newStart, $lte: newEnd } },
-            // Existing semester ends during new semester
-            { end: { $gte: newStart, $lte: newEnd } },
-            // Existing semester completely contains new semester
-            { $and: [{ start: { $lte: newStart } }, { end: { $gte: newEnd } }] },
-            // New semester completely contains existing semester
-            { $and: [{ start: { $gte: newStart } }, { end: { $lte: newEnd } }] }
+            { start: { $gte: start, $lte: end } },
+            { end: { $gte: start, $lte: end } },
+            { $and: [{ start: { $lte: start } }, { end: { $gte: end } }] },
+            { $and: [{ start: { $gte: start } }, { end: { $lte: end } }] }
         ]
     };
     
@@ -30,7 +21,7 @@ const checkDateConflict = async (start, end, excludeId = null) => {
     }
     
     const conflictingSemesters = await semesterModel.find(query);
-    
+
     if (conflictingSemesters.length > 0) {
         const conflicts = conflictingSemesters.map(sem => ({
             semester_type: sem.semester_type,
@@ -50,8 +41,10 @@ const addSemester = async (req, res) => {
     try {
         // Check for date conflicts
         const conflicts = await checkDateConflict(start, end);
-        const statusConflict = await semesterModel.findOne({status: "Ongoing"});
+        const statusConflict = await semesterModel.findOne({status: "Ongoing"})
         const sy = await semesterModel.find({school_year});
+
+        console.log(sy)
         
         if (conflicts) {
             return res.status(400).json({
@@ -60,29 +53,21 @@ const addSemester = async (req, res) => {
             });
         }
         
-        const existingSemester = await semesterModel.findOne({school_year, semester_type});
-        
-        if (existingSemester) {
-            return res.status(405).send("Semester already exists");
+        if(sy !== null) {
+            for(const year of sy){
+                if(year.school_year === school_year && year.semester_type === semester_type){
+                    return res.status(405).send("semester already exist")
+                }
+            }
         }
-        
-        if (status === "Ongoing" && statusConflict) {
-            return res.status(400).json({
-                error: "There can only be one Ongoing semester at a time"
-            });
-        }
-        
-        const parsedStart = parseDate(start);
-        const parsedEnd = parseDate(end);
         
         const newSemester = new semesterModel({ 
             semester_type, 
             school_year, 
-            start: parsedStart, 
-            end: parsedEnd, 
+            start, 
+            end, 
             status 
         });
-        
         await newSemester.save();
         res.sendStatus(200);
     } catch (error) {
