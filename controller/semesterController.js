@@ -9,10 +9,14 @@ const checkDateConflict = async (start, end, excludeId = null) => {
     // Find all semesters that might conflict
     const query = {
         $or: [
-            { start: { $gte: start, $lte: end } },
-            { end: { $gte: start, $lte: end } },
-            { $and: [{ start: { $lte: start } }, { end: { $gte: end } }] },
-            { $and: [{ start: { $gte: start } }, { end: { $lte: end } }] }
+            // Existing semester starts during new semester
+            { start: { $gte: newStart, $lte: newEnd } },
+            // Existing semester ends during new semester
+            { end: { $gte: newStart, $lte: newEnd } },
+            // Existing semester completely contains new semester
+            { $and: [{ start: { $lte: newStart } }, { end: { $gte: newEnd } }] },
+            // New semester completely contains existing semester
+            { $and: [{ start: { $gte: newStart } }, { end: { $lte: newEnd } }] }
         ]
     };
     
@@ -21,7 +25,7 @@ const checkDateConflict = async (start, end, excludeId = null) => {
     }
     
     const conflictingSemesters = await semesterModel.find(query);
-
+    
     if (conflictingSemesters.length > 0) {
         const conflicts = conflictingSemesters.map(sem => ({
             semester_type: sem.semester_type,
