@@ -3,47 +3,36 @@ import moment from "moment-timezone";
 
 // Helper function to check date conflicts
 const checkDateConflict = async (start, end, excludeId = null) => {
+    const newStart = new Date(start);
+    const newEnd = new Date(end);
+    
+    // Find all semesters that might conflict
     const query = {
         $or: [
             { start: { $gte: start, $lte: end } },
             { end: { $gte: start, $lte: end } },
-            { start: { $lte: start }, end: { $gte: end } },
-            { start: { $gte: start }, end: { $lte: end } },
-            { 
-                $expr: { 
-                    $or: [
-                        { $and: [
-                            { $ne: [{ $year: "$start" }, { $year: "$end" }] },
-                            { $or: [
-                                { $lte: ["$start", end] },
-                                { $gte: ["$end", start] }
-                            ]}
-                        ]},
-                        { $and: [
-                            { $ne: [{ $year: start }, { $year: end }] },
-                            { $or: [
-                                { $lte: ["$start", end] },
-                                { $gte: ["$end", start] }
-                            ]}
-                        ]}
-                    ]
-                }
-            }
+            { $and: [{ start: { $lte: start } }, { end: { $gte: end } }] },
+            { $and: [{ start: { $gte: start } }, { end: { $lte: end } }] }
         ]
     };
-
-    if (excludeId) query._id = { $ne: excludeId };
-
+    
+    if (excludeId) {
+        query._id = { $ne: excludeId };
+    }
+    
     const conflictingSemesters = await semesterModel.find(query);
     
-    return conflictingSemesters.length > 0
-        ? conflictingSemesters.map(sem => ({
+    if (conflictingSemesters.length > 0) {
+        const conflicts = conflictingSemesters.map(sem => ({
             semester_type: sem.semester_type,
             school_year: sem.school_year,
             start: sem.start,
             end: sem.end
-        }))
-        : null;
+        }));
+        return conflicts;
+    }
+    
+    return null;
 };
 
 const addSemester = async (req, res) => {
