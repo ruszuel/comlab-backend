@@ -42,6 +42,9 @@ const addSemester = async (req, res) => {
         // Check for date conflicts
         const conflicts = await checkDateConflict(start, end);
         const statusConflict = await semesterModel.findOne({status: "Ongoing"})
+        const sy = await semesterModel.find({school_year});
+
+        console.log(sy)
         
         if (conflicts) {
             return res.status(400).json({
@@ -54,6 +57,12 @@ const addSemester = async (req, res) => {
             return res.status(405).json({
                 error: "There is already an ongoing semester"
             })
+        }
+
+        for(const year of sy){
+            if(year.school_year === school_year && year.semester_type === semester_type){
+                return res.status(405).send("semester already exist")
+            }
         }
         
         const newSemester = new semesterModel({ semester_type, school_year, start, end, status });
