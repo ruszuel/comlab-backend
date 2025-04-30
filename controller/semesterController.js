@@ -86,6 +86,9 @@ const editSemester = async (req, res) => {
     try {
         // Check for date conflicts, excluding the current semester we're editing
         const conflicts = await checkDateConflict(start, end, _id);
+        const sy = await semesterModel.find({school_year});
+
+        console.log(sy)
         
         if (conflicts) {
             return res.status(400).json({
@@ -93,6 +96,14 @@ const editSemester = async (req, res) => {
                 conflicts
             });
         }
+
+        if(sy !== null) {
+            for(const year of sy){
+                if(year.school_year === school_year && year.semester_type === semester_type){
+                    return res.status(405).send("semester already exist")
+                }
+            }
+        }    
         
         await semesterModel.updateOne(
             { _id },
