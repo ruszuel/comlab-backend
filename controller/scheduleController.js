@@ -36,12 +36,33 @@ const addSchedules = async (req, res) => {
 }
 
 const editSched = async (req, res) => {
-    const {event_id, title, start, end, teacher_name, subject, course, section, subtitle, comlab} = req.body
+    const {event_id, title, start, end, teacher_name, subject, course, section, subtitle, comlab, comlab_id} = req.body
+    const startObj = new Date(start);
+    const endObj = new Date(end);
+    
     try {
         const event = await schedule.findOne({event_id})
+        const schedules = await schedule.findOne({comlab_id})
         if(!event){
-            return sendStatus(404)
+            return res.sendStatus(404)
         }
+
+        if(schedules === null){
+            return res.sendStatus(404)
+        }
+
+        const isConflicted = schedules.some((s) => {
+            const storedStart = new Date(s.start).getTime();
+            const storedEnd = new Date(s.end).getTime();
+            const newStart = startObj.getTime();
+            const newEnd = endObj.getTime();
+            
+            return newStart < storedEnd && newEnd > storedStart;
+        })
+        if(isConflicted){
+            return res.status(400).json("Conflict on schedule detected!")
+        }
+
         const update = await schedule.updateOne({event_id},{$set: {title, start, end, teacher_name, subject, course, section, subtitle, comlab}})
         if(update.modifiedCount === 0){
             return;
